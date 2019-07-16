@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import axios from 'axios'
 
-const Form = () => {
+const Form = ({ setUrl }) => {
   const setFromEvent = func => event => {
     func(event.target.value)
   }
@@ -32,74 +33,69 @@ const Form = () => {
     }
     try {
       const response = await axios.post('/generate', data)
-      window.location = response.data.url
+      setUrl(response.data.url)
+      // window.location = response.data.url
     } catch (e) {
       console.error(e)
     }
   }
 
   return (
-    <div className="row">
-      <div className="column column-50">
-        <label htmlFor="title">Title</label>
-        <input
-          type="text"
-          name="title"
-          id="title"
-          placeholder="Symphony No. 5"
-          value={title}
-          onChange={setFromEvent(setTitle)}
-        />
-        <label htmlFor="part">Part Name</label>
-        <input
-          type="text"
-          name="part-name"
-          id="part-name"
-          placeholder="Violin I"
-          value={partName}
-          onChange={setFromEvent(setPartName)}
-        />
+    <div className="column column-33">
+      <label htmlFor="title">Title</label>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        placeholder="Symphony No. 5"
+        value={title}
+        onChange={setFromEvent(setTitle)}
+      />
+      <label htmlFor="part">Part Name</label>
+      <input
+        type="text"
+        name="part-name"
+        id="part-name"
+        placeholder="Violin I"
+        value={partName}
+        onChange={setFromEvent(setPartName)}
+      />
 
-        <label htmlFor="part-additional">Additional Part Information</label>
-        <input
-          type="text"
-          name="part-additional"
-          id="part-additional"
-          placeholder="in Bb"
-          value={partAdditional}
-          onChange={setFromEvent(setPartAdditional)}
-        />
+      <label htmlFor="part-additional">Additional Part Information</label>
+      <input
+        type="text"
+        name="part-additional"
+        id="part-additional"
+        placeholder="in Bb"
+        value={partAdditional}
+        onChange={setFromEvent(setPartAdditional)}
+      />
 
-        <ListField
-          items={extraLines}
-          setItems={setExtraLines}
-          name="extra-line"
-          label="Extra Information Lines"
-        />
-        <button className="button" onClick={submit}>
-          Submit
-        </button>
-        <button
-          className="button-outline"
-          style={{ marginLeft: '1rem' }}
-          onClick={clear}
-        >
-          Clear
-        </button>
-      </div>
-      <div className="column column-50">
-        <ListField
-          items={composers}
-          setItems={setComposers}
-          name="composer"
-          label="Composers"
-        />
-      </div>
+      <ListField
+        items={composers}
+        setItems={setComposers}
+        name="composer"
+        label="Composers"
+        placeholder="Ludwig van Beethoven"
+      />
+      <ListField
+        items={extraLines}
+        setItems={setExtraLines}
+        name="extra-line"
+        label="Extra Information Lines"
+        placeholder="in C minor"
+      />
+      <button className="button" onClick={submit}>
+        Submit
+      </button>
+      <button className="button-outline" style={{ marginLeft: '1rem' }} onClick={clear}>
+        Clear
+      </button>
     </div>
   )
 }
 
-const ListField = ({ items, setItems, name, label }) => {
+const ListField = ({ items, setItems, name, label, placeholder }) => {
   const [next, setNext] = useState('')
   const appendItem = () => {
     setItems(oldItems => {
@@ -134,6 +130,7 @@ const ListField = ({ items, setItems, name, label }) => {
           value={next}
           onChange={e => setNext(e.target.value)}
           onKeyUp={submitIfEnter}
+          placeholder={placeholder}
         />
         <button className="button button-clear" onClick={appendItem}>
           <FontAwesomeIcon icon={faPlus} />
@@ -151,6 +148,10 @@ const ListField = ({ items, setItems, name, label }) => {
       </ul>
     </React.Fragment>
   )
+}
+
+Form.propTypes = {
+  setUrl: PropTypes.func.isRequired,
 }
 
 export default Form

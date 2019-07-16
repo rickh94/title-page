@@ -3,12 +3,12 @@ from pathlib import Path
 from typing import List, Optional
 
 import jinja2
-import pdfkit
+import random
 import weasyprint
 import weasyprint.fonts
 from fastapi import FastAPI, Body
 from pydantic import BaseModel
-from starlette.responses import FileResponse, HTMLResponse
+from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 
 app = FastAPI(title="Music Title Pages", version="19.7.1")
@@ -58,13 +58,19 @@ def create(piece: Piece = Body(..., example=piece_example)):
         extra_info=piece.extra_info,
         part_additional=piece.part_additional,
     )
-    file_name = piece.title.lower().replace(" ", "_").replace("/", "_") + "_title_page"
+    random_num = "".join(random.choice("0123456789abcdef") for _ in range(4))
+    file_name = (
+        random_num
+        + "_"
+        + piece.title.lower().replace(" ", "_").replace("/", "_")
+        + "_title_page"
+    )
     tmp_dir = Path(tempfile.mkdtemp())
     html_path = tmp_dir / f"{file_name}.html"
     pdf_path = PDF_PATH / f"{file_name}.pdf"
     with html_path.open("w") as html_file:
         html_file.write(html)
-    new_to_pdf(html_path, pdf_path)
+    to_pdf(html_path, pdf_path)
 
     return {"url": f"/media/{file_name}.pdf"}
 
@@ -88,43 +94,22 @@ def render_html(title, composers, part, extra_info=None, part_additional=""):
 
 
 def to_pdf(in_path, out_path):
-    here = Path(__file__)
-    base = here.parent
-    wkhtmltopdf_path = base / "binary" / "wkhtmltopdf"
-    config = pdfkit.configuration(wkhtmltopdf=str(wkhtmltopdf_path))
-    pdfkit.from_file(str(in_path), str(out_path), configuration=config)
-
-
-def new_to_pdf(in_path, out_path):
-    font_config = weasyprint.fonts.FontConfiguration()
-    here = Path(__file__).parent.absolute() / "templates"
-    css = weasyprint.CSS(
-        string=(
-            "@font-face {"
-            "   font-family: 'Cormorant Garamond';"
-            f"   src: url(file://{here}/CormorantGaramond-Regular.ttf);"
-            "}"
-        ),
-        font_config=font_config,
-    )
-    weasyprint.HTML(filename=str(in_path)).write_pdf(
-        str(out_path), font_config=font_config, stylesheets=[css]
-    )
+    weasyprint.HTML(filename=str(in_path)).write_pdf(str(out_path))
 
 
 # if __name__ == "__main__":
-# with open("test.html", "w") as out_file:
-#     out_file.write(
-#         render_html(
-#             title="Shaker",
-#             composers=["Kevin Sylvester", "Wilner Baptiste"],
-#             part="Viola",
-#             extra_info=[
-#                 "arr. Seth Truby & Mark Woodward",
-#                 "For youth orchestra and piano",
-#                 "From the album Stereotypes, Black Violin, 2015",
-#                 'Based on variations of "Simple Gifts" by Joseph Brackett',
-#             ],
+#     with open("test.html", "w") as out_file:
+#         out_file.write(
+#             render_html(
+#                 title="Shaker",
+#                 composers=["Kevin Sylvester", "Wilner Baptiste"],
+#                 part="Viola",
+#                 extra_info=[
+#                     "arr. Seth Truby & Mark Woodward",
+#                     "For youth orchestra and piano",
+#                     "From the album Stereotypes, Black Violin, 2015",
+#                     'Based on variations of "Simple Gifts" by Joseph Brackett',
+#                 ],
+#             )
 #         )
-#     )
-# new_to_pdf(Path("test.html"), Path("test.pdf"))
+#     new_to_pdf(Path("test.html"), Path("test.pdf"))
