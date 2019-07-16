@@ -7,12 +7,13 @@ verify_ssl = true
 
 [packages]
 jinja2 = "*"
-click = "*"
 pdfkit = "*"
 boto3 = "*"
-urllib3 = "*"
 weasyprint = "*"
 cffi = "*"
+fastapi = {extras = ["full"],version = "*"}
+uvicorn = "*"
+aiofiles = "*"
 
 [requires]
 python_version = "3.7"
