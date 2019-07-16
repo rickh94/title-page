@@ -16,15 +16,21 @@ services:
   nginx:
     image: nginx:alpine
     volumes:
-      - ./config/nginx:/etc/nginx/conf.d/
-      - ./config/certbot/conf:/etc/letsencrypt
-      - ./config/certbot/www:/var/www/certbot
+      - ./data/nginx:/etc/nginx/conf.d/
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
+    restart: always
+    depends_on:
+      - app
 
   certbot:
     image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
 networks:
   default:
