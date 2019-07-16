@@ -1,0 +1,10 @@
+Resources:
+  OutputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.bucketName}
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: '10'
+            Prefix: ''
+            Status: Enabled
