@@ -1,3 +1,4 @@
 test.html test.pdf
 *.ttf
 *.zip
+deploy.sh
