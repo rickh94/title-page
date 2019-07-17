@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f6d91a33cba8e6cd92243be9554225b10dd6dd1833333f65962f7260262d2621"
+            "sha256": "429b9cf6c6571e42cee568396bc06c7474935b579f008eba80ce9362c9d21deb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -251,6 +251,13 @@
             ],
             "version": "==0.30"
         },
+        "pypdf2": {
+            "hashes": [
+                "sha256:e28f902f2f0a1603ea95ebe21dff311ef09be3d0f0ef29a3e44a932729564385"
+            ],
+            "index": "pypi",
+            "version": "==1.26.0"
+        },
         "pyphen": {
             "hashes": [
                 "sha256:3b633a50873156d777e1f1075ba4d8e96a6ad0a3ca42aa3ea9a6259f93f18921",
@@ -265,6 +272,13 @@
             ],
             "markers": "python_version >= '2.7'",
             "version": "==2.8.0"
+        },
+        "python-multipart": {
+            "hashes": [
+                "sha256:f7bb5f611fc600d15fa47b3974c8aa16e93724513b49b5f95c81e6624c83fa43"
+            ],
+            "index": "pypi",
+            "version": "==0.0.5"
         },
         "s3transfer": {
             "hashes": [

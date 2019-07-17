@@ -2,11 +2,12 @@ import tempfile
 from pathlib import Path
 from typing import List, Optional
 
+import PyPDF2
 import jinja2
 import random
 import weasyprint
 import weasyprint.fonts
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, UploadFile, File, Form
 from pydantic import BaseModel
 from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
@@ -24,6 +25,7 @@ class Piece(BaseModel):
 
 class Output(BaseModel):
     url: str
+    filename: str
 
 
 piece_example = {
@@ -72,7 +74,25 @@ def create(piece: Piece = Body(..., example=piece_example)):
         html_file.write(html)
     to_pdf(html_path, pdf_path)
 
-    return {"url": f"/media/{file_name}.pdf"}
+    return Output(url=f"/media/{file_name}.pdf", filename=f"{file_name}.pdf")
+
+
+@app.post("/combine", response_model=Output)
+async def combine(file: UploadFile = File(...), title_page_filename: str = Form(...)):
+    tmp_upload = tempfile.TemporaryFile()
+    tmp_upload.write(await file.read())
+    title_page_path = PDF_PATH / title_page_filename
+
+    merged_pdf = PyPDF2.PdfFileMerger()
+
+    merged_pdf.append(str(title_page_path.absolute()))
+    merged_pdf.append(tmp_upload)
+
+    output_pdf_path = PDF_PATH / file.filename
+    with output_pdf_path.open("wb") as output_file:
+        merged_pdf.write(output_file)
+
+    return Output(url=f"/media/{output_pdf_path.name}", filename=f"{file.filename}")
 
 
 def render_html(title, composers, part, extra_info=None, part_additional=""):

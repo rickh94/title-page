@@ -1,0 +1,21 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - ./frontend/dist:/app/frontend/dist
+    tmpfs:
+      - /srv/media
+    ports:
+      - "8080:80"
+    restart: always
+
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.90.0/24

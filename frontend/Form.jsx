@@ -5,7 +5,7 @@ import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import axios from 'axios'
 
-const Form = ({ setUrl }) => {
+const Form = ({ setUrl, url }) => {
   const setFromEvent = func => event => {
     func(event.target.value)
   }
@@ -14,6 +14,8 @@ const Form = ({ setUrl }) => {
   const [partAdditional, setPartAdditional] = useState('')
   const [composers, setComposers] = useState([])
   const [extraLines, setExtraLines] = useState([])
+  const [origFile, setFile] = useState(null)
+  const [titlePageFileName, setTitlePageFileName] = useState('')
 
   const clear = () => {
     setTitle('')
@@ -34,9 +36,24 @@ const Form = ({ setUrl }) => {
     try {
       const response = await axios.post('/generate', data)
       setUrl(response.data.url)
+      setTitlePageFileName(response.data.filename)
       // window.location = response.data.url
     } catch (e) {
-      console.error(e)
+      alert(e)
+    }
+  }
+
+  const combine = async () => {
+    const formData = new FormData()
+    formData.append('title_page_filename', titlePageFileName)
+    formData.append('file', origFile)
+    try {
+      const response = await axios.post('/combine', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      window.location = response.data.url
+    } catch (e) {
+      alert(e)
     }
   }
 
@@ -70,7 +87,6 @@ const Form = ({ setUrl }) => {
         value={partAdditional}
         onChange={setFromEvent(setPartAdditional)}
       />
-
       <ListField
         items={composers}
         setItems={setComposers}
@@ -85,12 +101,30 @@ const Form = ({ setUrl }) => {
         label="Extra Information Lines"
         placeholder="in C minor"
       />
+
       <button className="button" onClick={submit}>
         Submit
       </button>
       <button className="button-outline" style={{ marginLeft: '1rem' }} onClick={clear}>
         Clear
       </button>
+      <div style={{ paddingTop: '2rem' }} />
+
+      {url && (
+        <React.Fragment>
+          <p>To add this title page to a file, upload it and click 'Combine'</p>
+          <label htmlFor="combine-file">Original File (Optional)</label>
+          <input
+            type="file"
+            name="combine-file"
+            id="combine-file"
+            onChange={e => setFile(e.target.files[0])}
+          />
+          <button className="button" onClick={combine}>
+            Combine
+          </button>
+        </React.Fragment>
+      )}
     </div>
   )
 }

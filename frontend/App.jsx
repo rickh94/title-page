@@ -16,7 +16,7 @@ const App = props => {
           <h4>Enter Piece Information</h4>
         </div>
         <div className="row" style={{ height: '84vh' }}>
-          <Form setUrl={setUrl} />
+          <Form setUrl={setUrl} url={url} />
           <Frame url={url} />
         </div>
       </div>
