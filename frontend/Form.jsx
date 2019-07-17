@@ -37,7 +37,6 @@ const Form = ({ setUrl, url }) => {
       const response = await axios.post('/generate', data)
       setUrl(response.data.url)
       setTitlePageFileName(response.data.filename)
-      // window.location = response.data.url
     } catch (e) {
       alert(e)
     }
@@ -51,7 +50,7 @@ const Form = ({ setUrl, url }) => {
       const response = await axios.post('/combine', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      window.location = response.data.url
+      window.open(response.data.url, '_blank') 
     } catch (e) {
       alert(e)
     }
