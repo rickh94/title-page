@@ -14,8 +14,8 @@
     "sweetalert2": "^8.17.1"
   },
   "scripts": {
-    "build": "parcel build --public-url /static index.html",
-    "watch": "parcel watch --public-url /static index.html",
+    "build": "parcel build --public-url /static src/index.html",
+    "watch": "parcel watch --public-url /static src/index.html",
     "test": "jest"
   },
   "devDependencies": {

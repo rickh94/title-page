@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, fireEvent, cleanup, act } from '@testing-library/react'
-import { Form, ListField } from '../Form'
+import { Form, ListField } from '../src/Form'
 import fetchMock from 'fetch-mock'
 import Swal from 'sweetalert2'
 
