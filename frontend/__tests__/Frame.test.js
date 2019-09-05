@@ -9,7 +9,7 @@ afterEach(() => {
 const dummyPdfUrl =
   'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
 
-describe('Form', () => {
+describe('Frame', () => {
   it('matches snapshot', () => {
     const { container } = render(<Frame url={dummyPdfUrl} />)
     expect(container).toMatchSnapshot()

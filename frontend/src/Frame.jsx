@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const Frame = ({ url }) => {
   return (
-    <div className="column column-67">
+    <div className="column column-67" data-testid="frame">
       {url && (
         <object
           style={{ width: '100%', height: '100%' }}

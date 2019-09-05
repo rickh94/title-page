@@ -4,6 +4,7 @@ exports[`Form matches snapshot 1`] = `
 <div>
   <div
     class="column column-33"
+    data-testid="form"
   >
     <label
       for="title"
