@@ -9,6 +9,7 @@ exports[`App matches snapshot 1`] = `
     <div
       class="row"
       data-testid="app-title"
+      id="app-title"
       style="height: 8vh;"
     >
       <h1>
@@ -163,6 +164,7 @@ exports[`App matches snapshot 1`] = `
         </button>
         <button
           class="button-outline"
+          data-testid="clear-button"
           style="margin-left: 1rem;"
         >
           Clear

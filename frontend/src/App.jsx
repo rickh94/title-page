@@ -8,7 +8,7 @@ const App = () => {
   const [url, setUrl] = useState('')
   return (
     <div className="container" style={{ height: '94vh' }}>
-      <div className="row" style={{ height: '8vh' }} data-testid="app-title">
+      <div className="row" style={{ height: '8vh' }} data-testid="app-title" id="app-title">
         <h1>Sheet Music Title Page Creator</h1>
       </div>
       <div className="row" style={{ height: '4vh' }} data-testid="app-heading">

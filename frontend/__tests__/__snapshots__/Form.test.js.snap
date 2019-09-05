@@ -137,6 +137,7 @@ exports[`Form matches snapshot 1`] = `
     </button>
     <button
       class="button-outline"
+      data-testid="clear-button"
       style="margin-left: 1rem;"
     >
       Clear

@@ -76,7 +76,7 @@ export const Form = ({ setUrl, url }) => {
         Swal.fire({
           title: 'Error',
           text: data.detail,
-          type: 'error'
+          type: 'error',
         })
       }
     } catch (e) {
@@ -138,7 +138,12 @@ export const Form = ({ setUrl, url }) => {
       <button className="button" onClick={submit} data-testid="submit-button">
         Submit
       </button>
-      <button className="button-outline" style={{ marginLeft: '1rem' }} onClick={clear}>
+      <button
+        className="button-outline"
+        style={{ marginLeft: '1rem' }}
+        onClick={clear}
+        data-testid="clear-button"
+      >
         Clear
       </button>
       <div style={{ paddingTop: '2rem' }} />
