@@ -64,7 +64,7 @@ def create(piece: Piece = Body(..., example=piece_example)):
     file_name = (
         random_num
         + "_"
-        + piece.title.lower().replace(" ", "_").replace("/", "_")
+        + piece.title.lower().replace(" ", "_").replace("/", "_").replace(".", "")
         + "_title_page"
     )
     tmp_dir = Path(tempfile.mkdtemp())
@@ -115,21 +115,3 @@ def render_html(title, composers, part, extra_info=None, part_additional=""):
 
 def to_pdf(in_path, out_path):
     weasyprint.HTML(filename=str(in_path)).write_pdf(str(out_path))
-
-
-# if __name__ == "__main__":
-#     with open("test.html", "w") as out_file:
-#         out_file.write(
-#             render_html(
-#                 title="Shaker",
-#                 composers=["Kevin Sylvester", "Wilner Baptiste"],
-#                 part="Viola",
-#                 extra_info=[
-#                     "arr. Seth Truby & Mark Woodward",
-#                     "For youth orchestra and piano",
-#                     "From the album Stereotypes, Black Violin, 2015",
-#                     'Based on variations of "Simple Gifts" by Joseph Brackett',
-#                 ],
-#             )
-#         )
-#     new_to_pdf(Path("test.html"), Path("test.pdf"))

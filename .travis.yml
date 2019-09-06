@@ -1,14 +1,25 @@
-language: node_js
-node_js: 12.7.0
+matrix:
+  include:
+    - language: python
+      python:
+        - '3.7'
+      before_install:
+        - pip install pipenv
+      install:
+        - pipenv install --system --dev
+      script:
+        - pipenv run pytest
 
-services:
-  - docker
-
-before_install:
-  - curl -O "https://fonts.google.com/download?family=Cormorant%20Garamond"
-  - docker-compose -f docker-compose.dev.yml up -d
-
-install:
-  - cd frontend && yarn
-
-script: yarn test
+    - language: node_js
+      node_js:
+        - 12.7.0
+      services:
+        - docker
+      before_install:
+        - curl -o Cormorant_Garamond.zip "https://fonts.google.com/download?family=Cormorant%20Garamond"
+        - docker-compose -f docker-compose.dev.yml up -d
+        - cd frontend
+      install:
+        - yarn
+      script:
+        - yarn test
