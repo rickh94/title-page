@@ -5,6 +5,7 @@ services:
   - docker
 
 before_install:
+  - curl -O "https://fonts.google.com/download?family=Cormorant%20Garamond"
   - docker-compose -f docker-compose.dev.yml up -d
 
 install:
