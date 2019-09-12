@@ -115,7 +115,7 @@ describe('Form', () => {
 
   it('renders a file upload if a title page has already been generated', () => {
     const { queryByTestId } = render(<Form url="http://test.test" setUrl={jest.fn()} />)
-    expect(queryByTestId('combine-file')).toBeTruthy()
+    expect(queryByTestId('combine-area')).toBeTruthy()
     expect(queryByTestId('combine-button')).toBeTruthy()
   })
 
@@ -159,7 +159,7 @@ describe('Form', () => {
       type: 'application/pdf',
     })
     mockFile.filename = 'test-file.pdf'
-    await fireEvent.change(getByTestId('combine-file'), {
+    await fireEvent.drop(getByTestId('combine-area'), {
       target: {
         files: [mockFile],
       },
@@ -202,7 +202,7 @@ describe('Form', () => {
       type: 'application/pdf',
     })
     mockFile.filename = 'test-file.pdf'
-    await fireEvent.change(getByTestId('combine-file'), {
+    await fireEvent.drop(getByTestId('combine-area'), {
       target: {
         files: [mockFile],
       },
@@ -243,7 +243,7 @@ describe('Form', () => {
       type: 'application/pdf',
     })
     mockFile.filename = 'test-file.pdf'
-    await fireEvent.change(getByTestId('combine-file'), {
+    await fireEvent.drop(getByTestId('combine-area'), {
       target: {
         files: [mockFile],
       },
