@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import useInput from 'react-hanger/array/useInput'
 import useArray from 'react-hanger/array/useArray'
 import Swal from 'sweetalert2'
+import { useDropzone } from 'react-dropzone'
+
+import './Form.css'
 
 const fetchPost = async (endpoint, body) => {
   const response = await fetch(endpoint, {
@@ -59,6 +62,12 @@ export const Form = ({ setUrl, url }) => {
       })
     }
   }
+
+  const onDrop = useCallback(acceptedFiles => {
+    console.log(acceptedFiles[0])
+    setFile(acceptedFiles[0])
+  }, [])
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   const combine = async () => {
     const formData = new FormData()
@@ -150,15 +159,12 @@ export const Form = ({ setUrl, url }) => {
 
       {url && (
         <>
-          <p>To add this title page to a file, upload it and click Combine</p>
-          <label htmlFor="combine-file">Original File (Optional)</label>
-          <input
-            type="file"
-            name="combine-file"
-            id="combine-file"
-            onChange={e => setFile(e.target.files[0])}
-            data-testid="combine-file"
-          />
+          <p>To add this title page to a file, add it below and click Combine</p>
+          {origFile && <p>Current File: {origFile.name}</p>}
+          <div {...getRootProps()} className="combine-area" data-testid="combine-area">
+            <input {...getInputProps()} />
+            <p>Drag a file here or click to upload</p>
+          </div>
           <button className="button" onClick={combine} data-testid="combine-button">
             Combine
           </button>
