@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "473020b3e309396c9acb5de0255b2a83d5be50995655178ba581663c310c8391"
+            "sha256": "c2d667061dad6584cb923b7e73165c3d5c1726fd456ee1a2193cb1ab4b9e5175"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -107,6 +107,13 @@
             ],
             "version": "==0.6.0"
         },
+        "dnspython": {
+            "hashes": [
+                "sha256:36c5e8e38d4369a08b6780b7f27d790a292b2b08eea01607865bf0936c558e01",
+                "sha256:f69c21288a962f4da86e56c4905b49d11aba7938d3d740e80d9e366ee4f1632d"
+            ],
+            "version": "==1.16.0"
+        },
         "docutils": {
             "hashes": [
                 "sha256:6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0",
@@ -114,6 +121,12 @@
                 "sha256:a2aeea129088da402665e92e0b25b04b073c04b2dce4ab65caaa38b7ce2e1a99"
             ],
             "version": "==0.15.2"
+        },
+        "email-validator": {
+            "hashes": [
+                "sha256:79966e318d6d68fed359c90f8f19d242bcc178b724011f1c07145bd093da6cc7"
+            ],
+            "version": "==1.0.4"
         },
         "fastapi": {
             "extras": [
@@ -146,6 +159,13 @@
             ],
             "markers": "sys_platform != 'win32' and sys_platform != 'cygwin' and platform_python_implementation != 'pypy'",
             "version": "==0.0.13"
+        },
+        "idna": {
+            "hashes": [
+                "sha256:c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407",
+                "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"
+            ],
+            "version": "==2.8"
         },
         "jinja2": {
             "hashes": [
@@ -242,6 +262,9 @@
             "version": "==2.19"
         },
         "pydantic": {
+            "extras": [
+                "email"
+            ],
             "hashes": [
                 "sha256:18598557f0d9ab46173045910ed50458c4fb4d16153c23346b504d7a5b679f77",
                 "sha256:6a9335c968e13295430a208487e74d69fef40168b72dea8d975765d14e2da660",
@@ -250,6 +273,7 @@
                 "sha256:e1a63b4e6bf8820833cb6fa239ffbe8eec57ccdd7d66359eff20e68a83c1deeb",
                 "sha256:ede2d65ae33788d4e26e12b330b4a32c53cb14131c65bca3a59f037c73f6ee7a"
             ],
+            "index": "pypi",
             "version": "==0.32.2"
         },
         "pypdf2": {

@@ -18,6 +18,7 @@ uvicorn = "*"
 aiofiles = "*"
 python-multipart = "*"
 pypdf2 = "*"
+pydantic = {extras = ["email"],version = "*"}
 
 [requires]
 python_version = "3.7"
