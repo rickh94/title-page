@@ -1,0 +1,9 @@
+.display-frame {
+    width: 100%;
+}
+
+@media (min-width: 1280px) {
+    .display-frame {
+        width: 67%;
+    }
+}

@@ -1,9 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
+
+import './Frame.css';
 
 const Frame = ({ url }) => {
   return (
-    <div className="column column-67" data-testid="frame">
+    <div className="display-frame" data-testid="frame">
       {url && (
         <object
           style={{ width: '100%', height: '100%' }}
@@ -11,15 +13,15 @@ const Frame = ({ url }) => {
           type="application/pdf"
           data-testid="wrapper-object"
         >
-          <embed src={url} type="application/pdf" data-testid="pdf-embed" />
+          <embed src={url} type="application/pdf" data-testid="pdf-embed"/>
         </object>
       )}
     </div>
-  )
-}
+  );
+};
 
 Frame.propTypes = {
   url: PropTypes.string.isRequired,
-}
+};
 
-export default Frame
+export default Frame;

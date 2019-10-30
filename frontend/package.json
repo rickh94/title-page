@@ -17,12 +17,12 @@
   "scripts": {
     "build": "parcel build --public-url /static src/index.html",
     "watch": "parcel watch --public-url /static src/index.html",
-    "pretest": "yarn build",
-    "debug": "yarn build && NODE_ENV=debug jest",
+    "pretest": "npm run build",
+    "debug": "npm run build && NODE_ENV=debug jest",
     "test": "jest",
-    "test:all": "yarn build && jest -c jest.config.js",
+    "test:all": "npm run build && jest -c jest.config.js",
     "test:unit": "jest -c jest.config.unit.js",
-    "test:live": "yarn build && jest -c jest.config.live.js"
+    "test:live": "npm run build && jest -c jest.config.live.js"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",

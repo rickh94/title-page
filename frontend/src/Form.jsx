@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from 'react'
-import PropTypes from 'prop-types'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
-import useInput from 'react-hanger/array/useInput'
-import useArray from 'react-hanger/array/useArray'
-import Swal from 'sweetalert2'
-import { useDropzone } from 'react-dropzone'
+import React, { useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import useInput from 'react-hanger/array/useInput';
+import useArray from 'react-hanger/array/useArray';
+import Swal from 'sweetalert2';
+import { useDropzone } from 'react-dropzone';
 
-import './Form.css'
+import './Form.css';
 
 const fetchPost = async (endpoint, body) => {
   const response = await fetch(endpoint, {
@@ -16,31 +16,31 @@ const fetchPost = async (endpoint, body) => {
     headers: {
       'Content-Type': 'application/json',
     },
-  })
-  const data = await response.json()
+  });
+  const data = await response.json();
   if (response.status >= 200 && response.status < 300) {
-    return data
+    return data;
   } else {
-    throw new Error(data.detail)
+    throw new Error(data.detail);
   }
-}
+};
 
 export const Form = ({ setUrl, url }) => {
-  const [[title], titleActions] = useInput('')
-  const [[partName], partNameActions] = useInput('')
-  const [[partAdditional], partAdditionalActions] = useInput('')
-  const [composers, composersActions] = useArray([])
-  const [extraLines, extraLinesActions] = useArray([])
-  const [origFile, setFile] = useState(null)
-  const [titlePageFileName, setTitlePageFileName] = useState('')
+  const [[title], titleActions] = useInput('');
+  const [[partName], partNameActions] = useInput('');
+  const [[partAdditional], partAdditionalActions] = useInput('');
+  const [composers, composersActions] = useArray([]);
+  const [extraLines, extraLinesActions] = useArray([]);
+  const [origFile, setFile] = useState(null);
+  const [titlePageFileName, setTitlePageFileName] = useState('');
 
   const clear = () => {
-    titleActions.clear()
-    partNameActions.clear()
-    partAdditionalActions.clear()
-    composersActions.clear()
-    extraLinesActions.clear()
-  }
+    titleActions.clear();
+    partNameActions.clear();
+    partAdditionalActions.clear();
+    composersActions.clear();
+    extraLinesActions.clear();
+  };
 
   const submit = async () => {
     const data = {
@@ -49,56 +49,56 @@ export const Form = ({ setUrl, url }) => {
       part: partName,
       extra_info: extraLines,
       part_additional: partAdditional,
-    }
+    };
     try {
-      const response = await fetchPost('/generate', data)
-      setUrl(response.url)
-      setTitlePageFileName(response.filename)
+      const response = await fetchPost('/generate', data);
+      setUrl(response.url);
+      setTitlePageFileName(response.filename);
     } catch (e) {
       Swal.fire({
         title: 'Error',
         text: e.toString(),
         type: 'error',
-      })
+      });
     }
-  }
+  };
 
   const onDrop = useCallback(acceptedFiles => {
-    console.log(acceptedFiles[0])
-    setFile(acceptedFiles[0])
-  }, [])
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+    setFile(acceptedFiles[0]);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const combine = async () => {
-    const formData = new FormData()
-    formData.append('title_page_filename', titlePageFileName)
-    formData.append('file', origFile)
+    const formData = new FormData();
+    formData.append('title_page_filename', titlePageFileName);
+    formData.append('file', origFile);
     try {
       const response = await fetch('/combine', {
         body: formData,
         method: 'POST',
-      })
-      const data = await response.json()
+        'Content-Type': 'application/x-www-form-urlencoded',
+      });
+      const data = await response.json();
       if (response.status >= 200 && response.status < 300) {
-        window.open(data.url, '_blank')
+        window.open(data.url, '_blank');
       } else {
         Swal.fire({
           title: 'Error',
           text: data.detail,
           type: 'error',
-        })
+        });
       }
     } catch (e) {
       Swal.fire({
         title: 'Error',
         text: e.toString(),
         type: 'error',
-      })
+      });
     }
-  }
+  };
 
   return (
-    <div className="column column-33" data-testid="form">
+    <div className="input-form" data-testid="form">
       <label htmlFor="title">Title</label>
       <input
         type="text"
@@ -155,7 +155,7 @@ export const Form = ({ setUrl, url }) => {
       >
         Clear
       </button>
-      <div style={{ paddingTop: '2rem' }} />
+      <div style={{ paddingTop: '2rem' }}/>
 
       {url && (
         <>
@@ -171,22 +171,22 @@ export const Form = ({ setUrl, url }) => {
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
 export const ListField = ({ items, actions, name, label, placeholder }) => {
-  const [[next], nextActions] = useInput('')
+  const [[next], nextActions] = useInput('');
   const appendItem = () => {
-    actions.push(next)
-    nextActions.clear()
-  }
+    actions.push(next);
+    nextActions.clear();
+  };
 
   const submitIfEnter = event => {
-    const code = event.keyCode ? event.keyCode : event.which
+    const code = event.keyCode ? event.keyCode : event.which;
     if (code === 13) {
-      appendItem()
+      appendItem();
     }
-  }
+  };
 
   return (
     <>
@@ -207,7 +207,7 @@ export const ListField = ({ items, actions, name, label, placeholder }) => {
           onClick={appendItem}
           data-testid={`${name}-add-button`}
         >
-          <FontAwesomeIcon icon={faPlus} />
+          <FontAwesomeIcon icon={faPlus}/>
         </button>
       </div>
       <ul id={`${name}s`} data-testid={`${name}-list`}>
@@ -219,14 +219,14 @@ export const ListField = ({ items, actions, name, label, placeholder }) => {
               onClick={() => actions.removeIndex(idx)}
               data-testid={`${name}-item-${idx}-remove`}
             >
-              <FontAwesomeIcon icon={faMinus} />
+              <FontAwesomeIcon icon={faMinus}/>
             </button>
           </li>
         ))}
       </ul>
     </>
-  )
-}
+  );
+};
 
 ListField.propTypes = {
   items: PropTypes.array.isRequired,
@@ -234,11 +234,11 @@ ListField.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
-}
+};
 
 Form.propTypes = {
   setUrl: PropTypes.func.isRequired,
   url: PropTypes.string,
-}
+};
 
-export default Form
+export default Form;
