@@ -64,7 +64,12 @@ def create(piece: Piece = Body(..., example=piece_example)):
     file_name = (
         random_num
         + "_"
-        + piece.title.lower().replace(" ", "_").replace("/", "_").replace(".", "")
+        + piece.title.lower()
+        .replace(" ", "_")
+        .replace("/", "_")
+        .replace(".", "")
+        .encode("ascii", errors="ignore")
+        .decode()
         + "_title_page"
     )
     tmp_dir = Path(tempfile.mkdtemp())

@@ -22,12 +22,12 @@ def test_frontend_loads(test_client: TestClient):
     assert 'script src="/static/src.' in response.text
 
 
-def test_create(test_client: TestClient, monkeypatch: MonkeyPatch):
+def test_create(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path):
     def fake_choice(*args):
         return "1"
 
     monkeypatch.setattr(random, "choice", fake_choice)
-    monkeypatch.setattr(title_page, "PDF_PATH", Path("/tmp/media/"))
+    monkeypatch.setattr(title_page, "PDF_PATH", tmp_path)
     response = test_client.post(
         "/generate",
         json={
@@ -41,11 +41,26 @@ def test_create(test_client: TestClient, monkeypatch: MonkeyPatch):
     assert response.ok
     assert response.json()["filename"] == "1111_symphony_no_5_title_page.pdf"
     assert response.json()["url"] == "/media/1111_symphony_no_5_title_page.pdf"
-    assert 0
 
 
-def test_combine(test_client: TestClient, monkeypatch: MonkeyPatch):
-    monkeypatch.setattr(title_page, "PDF_PATH", Path("/tmp/media/"))
+def test_create_non_ascii(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path):
+    def fake_choice(*args):
+        return "2"
+
+    monkeypatch.setattr(random, "choice", fake_choice)
+    monkeypatch.setattr(title_page, "PDF_PATH", tmp_path)
+    response = test_client.post(
+        "/generate",
+        json={"title": "abcñ", "composers": ["Test Composer"], "part": "Violin I"},
+    )
+
+    assert response.ok
+    assert response.json()["filename"] == "2222_abc_title_page.pdf"
+    assert response.json()["url"] == "/media/2222_abc_title_page.pdf"
+
+
+def test_combine(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path):
+    monkeypatch.setattr(title_page, "PDF_PATH", tmp_path)
     response = test_client.post(
         "/generate",
         json={

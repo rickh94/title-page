@@ -76,7 +76,9 @@ export const Form = ({ setUrl, url }) => {
       const response = await fetch('/combine', {
         body: formData,
         method: 'POST',
-        'Content-Type': 'application/x-www-form-urlencoded',
+        headers: {
+          'Content-Type': 'multipart/form-data;'
+        },
       });
       const data = await response.json();
       if (response.status >= 200 && response.status < 300) {
