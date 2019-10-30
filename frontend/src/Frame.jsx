@@ -5,10 +5,11 @@ import './Frame.css';
 
 const Frame = ({ url }) => {
   return (
-    <div className="display-frame" data-testid="frame">
+    <>
+    <div className="display-frame-wrapper" data-testid="frame">
       {url && (
         <object
-          style={{ width: '100%', height: '100%' }}
+          className="display-frame"
           data={url}
           type="application/pdf"
           data-testid="wrapper-object"
@@ -17,6 +18,7 @@ const Frame = ({ url }) => {
         </object>
       )}
     </div>
+      </>
   );
 };
 
