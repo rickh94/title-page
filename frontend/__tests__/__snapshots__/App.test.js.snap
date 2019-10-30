@@ -7,12 +7,13 @@ exports[`App matches snapshot 1`] = `
     style="height: 94vh;"
   >
     <div
-      class="row"
+      class="row app-title"
       data-testid="app-title"
       id="app-title"
-      style="height: 8vh;"
     >
-      <h1>
+      <h1
+        class="main-heading"
+      >
         Sheet Music Title Page Creator
       </h1>
     </div>
@@ -26,11 +27,11 @@ exports[`App matches snapshot 1`] = `
       </h4>
     </div>
     <div
-      class="row"
+      class="form-frame-container"
       style="height: 84vh;"
     >
       <div
-        class="column column-33"
+        class="input-form"
         data-testid="form"
       >
         <label
@@ -175,7 +176,7 @@ exports[`App matches snapshot 1`] = `
         
       </div>
       <div
-        class="column column-67"
+        class="display-frame"
         data-testid="frame"
       />
     </div>

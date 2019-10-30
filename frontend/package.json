@@ -22,7 +22,8 @@
     "test": "jest",
     "test:all": "npm run build && jest -c jest.config.js",
     "test:unit": "jest -c jest.config.unit.js",
-    "test:live": "npm run build && jest -c jest.config.live.js"
+    "test:live": "npm run build && jest -c jest.config.live.js",
+    "test:update": "jest -u -c jest.config.unit.js"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",

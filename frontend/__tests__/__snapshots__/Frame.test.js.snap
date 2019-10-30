@@ -3,7 +3,7 @@
 exports[`Frame matches snapshot 1`] = `
 <div>
   <div
-    class="column column-67"
+    class="display-frame"
     data-testid="frame"
   >
     <object
