@@ -19,6 +19,7 @@ aiofiles = "*"
 python-multipart = "*"
 pypdf2 = "*"
 pydantic = {extras = ["email"],version = "*"}
+pillow = ">=6.2.0"
 
 [requires]
 python_version = "3.7"
