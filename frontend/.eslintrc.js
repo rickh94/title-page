@@ -24,7 +24,7 @@ module.exports = {
     ],
     'linebreak-style': ['error', 'unix'],
     quotes: ['warn', 'single'],
-    semi: ['warn', 'never'],
+    semi: ['warn', 'always'],
   },
   settings: {
     react: {

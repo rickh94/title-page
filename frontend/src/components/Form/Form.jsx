@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import useInput from 'react-hanger/array/useInput';
 import useArray from 'react-hanger/array/useArray';
+import useBoolean from 'react-hanger/array/useBoolean';
 import Swal from 'sweetalert2';
 import { useDropzone } from 'react-dropzone';
 
@@ -33,6 +34,8 @@ export const Form = ({ setUrl, url }) => {
   const [extraLines, extraLinesActions] = useArray([]);
   const [origFile, setFile] = useState(null);
   const [titlePageFileName, setTitlePageFileName] = useState('');
+  const [composerDirty, composerDirtyActions] = useBoolean(false);
+  const [extraLinesDirty, extraLinesDirtyActions] = useBoolean(false);
 
   const clear = () => {
     titleActions.clear();
@@ -43,6 +46,15 @@ export const Form = ({ setUrl, url }) => {
   };
 
   const submit = async () => {
+    if (composerDirty || extraLinesDirty) {
+      await Swal.fire({
+        title: 'Data Entered',
+        text: 'You have entered information in a list (composer or extra info) but not added it to the page. ' +
+          'Please click the plus to add it or delete it from the input.',
+        type: 'warning',
+      });
+      return;
+    }
     const data = {
       title,
       composers,
@@ -55,7 +67,7 @@ export const Form = ({ setUrl, url }) => {
       setUrl(response.url);
       setTitlePageFileName(response.filename);
     } catch (e) {
-      Swal.fire({
+      await Swal.fire({
         title: 'Error',
         text: e.toString(),
         type: 'error',
@@ -77,7 +89,7 @@ export const Form = ({ setUrl, url }) => {
         body: formData,
         method: 'POST',
         headers: {
-          'Content-Type': 'multipart/form-data;'
+          'Content-Type': 'multipart/form-data;',
         },
       });
       const data = await response.json();
@@ -138,6 +150,7 @@ export const Form = ({ setUrl, url }) => {
         name="composer"
         label="Composers"
         placeholder="Ludwig van Beethoven"
+        dirtyActions={composerDirtyActions}
       />
       <ListField
         items={extraLines}
@@ -145,6 +158,7 @@ export const Form = ({ setUrl, url }) => {
         name="extra-line"
         label="Extra Information Lines"
         placeholder="in C minor"
+        dirtyActions={extraLinesDirtyActions}
       />
       <button className="button" onClick={submit} data-testid="submit-button">
         Submit
@@ -157,7 +171,7 @@ export const Form = ({ setUrl, url }) => {
       >
         Clear
       </button>
-      <div style={{ paddingTop: '2rem' }}/>
+      <div style={{ paddingTop: '2rem' }} />
 
       {url && (
         <>
@@ -176,11 +190,12 @@ export const Form = ({ setUrl, url }) => {
   );
 };
 
-export const ListField = ({ items, actions, name, label, placeholder }) => {
+export const ListField = ({ items, actions, name, label, placeholder, dirtyActions }) => {
   const [[next], nextActions] = useInput('');
   const appendItem = () => {
     actions.push(next);
     nextActions.clear();
+    dirtyActions.setFalse();
   };
 
   const submitIfEnter = event => {
@@ -199,7 +214,10 @@ export const ListField = ({ items, actions, name, label, placeholder }) => {
           name={`add-${name}`}
           id={`add-${name}`}
           value={next}
-          onChange={nextActions.onChange}
+          onChange={e => {
+            dirtyActions.setTrue();
+            nextActions.onChange(e);
+          }}
           onKeyUp={submitIfEnter}
           placeholder={placeholder}
           data-testid={`${name}-next-input`}
@@ -209,7 +227,7 @@ export const ListField = ({ items, actions, name, label, placeholder }) => {
           onClick={appendItem}
           data-testid={`${name}-add-button`}
         >
-          <FontAwesomeIcon icon={faPlus}/>
+          <FontAwesomeIcon icon={faPlus} />
         </button>
       </div>
       <ul id={`${name}s`} data-testid={`${name}-list`}>
@@ -221,7 +239,7 @@ export const ListField = ({ items, actions, name, label, placeholder }) => {
               onClick={() => actions.removeIndex(idx)}
               data-testid={`${name}-item-${idx}-remove`}
             >
-              <FontAwesomeIcon icon={faMinus}/>
+              <FontAwesomeIcon icon={faMinus} />
             </button>
           </li>
         ))}
@@ -236,6 +254,7 @@ ListField.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
+  dirtyActions: PropTypes.object.isRequired,
 };
 
 Form.propTypes = {

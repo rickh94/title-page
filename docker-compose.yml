@@ -5,6 +5,7 @@ services:
       context: .
     volumes:
       - ./frontend/dist:/app/frontend/dist
+      - completions:/completions
     tmpfs:
       - /srv/media
     restart: always
@@ -39,3 +40,7 @@ networks:
       driver: default
       config:
         - subnet: 172.16.90.0/24
+
+
+volumes:
+  completions:
