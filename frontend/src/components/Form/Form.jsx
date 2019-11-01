@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -175,23 +175,24 @@ export const Form = ({ setUrl, url }) => {
       </button>
       <div style={{ paddingTop: '2rem' }} />
 
-      {/*{url && (*/}
-      <>
-        <p>To add this title page to a file, add it below and click Combine</p>
-        {origFile && <p>Current File: {origFile.name}
-          <button className="button button-clear" title="Remove File" onClick={() => setFile(null)}>
-            <FontAwesomeIcon icon={faTrash} />
+      {url && (
+        <>
+          <p>To add this title page to a file, add it below and click Combine</p>
+          {origFile && <p>Current File: {origFile.name}
+            <button className="button button-clear" title="Remove File"
+                    onClick={() => setFile(null)}>
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          </p>}
+          <div {...getRootProps()} className="combine-area" data-testid="combine-area">
+            <input {...getInputProps()} />
+            <p>Drag a file here or click to upload</p>
+          </div>
+          <button className="button" onClick={combine} data-testid="combine-button">
+            Combine
           </button>
-        </p>}
-        <div {...getRootProps()} className="combine-area" data-testid="combine-area">
-          <input {...getInputProps()} />
-          <p>Drag a file here or click to upload</p>
-        </div>
-        <button className="button" onClick={combine} data-testid="combine-button">
-          Combine
-        </button>
-      </>
-      {/*)}*/}
+        </>
+      )}
     </div>
   );
 };
