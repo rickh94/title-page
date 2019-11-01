@@ -16,6 +16,7 @@ app = FastAPI(title="Music Title Pages", version="19.7.1")
 
 
 class Piece(BaseModel):
+    font: str = "Cormorant Garamond"
     title: str
     composers: List[str]
     part: str
@@ -60,6 +61,7 @@ def create(piece: Piece = Body(..., example=piece_example)):
         part=piece.part,
         extra_info=piece.extra_info,
         part_additional=piece.part_additional,
+        font=piece.font,
     )
     add_composer_completions(piece.composers)
     file_name = uuid.uuid4()
@@ -96,7 +98,7 @@ async def get_composer_completions():
     return get_composer_completions()
 
 
-def render_html(title, composers, part, extra_info=None, part_additional=""):
+def render_html(title, composers, part, font, extra_info=None, part_additional=""):
     if not extra_info:
         extra_info = []
     env = jinja2.Environment(
@@ -111,6 +113,7 @@ def render_html(title, composers, part, extra_info=None, part_additional=""):
         extra_info=extra_info,
         part_additional=part_additional,
         part=part,
+        font=font,
     )
 
 
