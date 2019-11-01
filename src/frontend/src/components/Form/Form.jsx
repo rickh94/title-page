@@ -10,6 +10,7 @@ import { useDropzone } from 'react-dropzone';
 
 import './Form.css';
 import Autocomplete from '../Autocomplete/Autocomplete.jsx';
+import FontSelect from '../FontSelect/FontSelect';
 
 const fetchPost = async (endpoint, body) => {
   const response = await fetch(endpoint, {
@@ -31,6 +32,7 @@ export const Form = ({ setUrl, url }) => {
   const [[title], titleActions] = useInput('');
   const [[partName], partNameActions] = useInput('');
   const [[partAdditional], partAdditionalActions] = useInput('');
+  const [[font], fontActions] = useInput('Cormorant Garamond');
   const [composers, composersActions] = useArray([]);
   const [extraLines, extraLinesActions] = useArray([]);
   const [origFile, setFile] = useState(null);
@@ -59,6 +61,7 @@ export const Form = ({ setUrl, url }) => {
     const data = {
       title,
       composers,
+      font,
       part: partName,
       extra_info: extraLines,
       part_additional: partAdditional,
@@ -89,9 +92,6 @@ export const Form = ({ setUrl, url }) => {
       const response = await fetch('/combine', {
         body: formData,
         method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data;',
-        },
       });
       const data = await response.json();
       if (response.status >= 200 && response.status < 300) {
@@ -162,6 +162,7 @@ export const Form = ({ setUrl, url }) => {
         placeholder="in C minor"
         dirtyActions={extraLinesDirtyActions}
       />
+      <FontSelect value={font} valueActions={fontActions} />
       <button className="button" onClick={submit} data-testid="submit-button">
         Submit
       </button>
@@ -179,10 +180,10 @@ export const Form = ({ setUrl, url }) => {
         <>
           <p>To add this title page to a file, add it below and click Combine</p>
           {origFile && <p>Current File: {origFile.name}
-            <button className="button button-clear" title="Remove File"
-                    onClick={() => setFile(null)}>
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
+            {/*<button className="button button-clear" title="Remove File"*/}
+            {/*        onClick={() => setFile(null)}>*/}
+            {/*  <FontAwesomeIcon icon={faTrash} />*/}
+            {/*</button>*/}
           </p>}
           <div {...getRootProps()} className="combine-area" data-testid="combine-area">
             <input {...getInputProps()} />
@@ -198,14 +199,14 @@ export const Form = ({ setUrl, url }) => {
 };
 
 export const ListField = ({
-  items,
-  actions,
-  name,
-  label,
-  placeholder,
-  dirtyActions,
-  completionsEndpoint,
-}) => {
+                            items,
+                            actions,
+                            name,
+                            label,
+                            placeholder,
+                            dirtyActions,
+                            completionsEndpoint,
+                          }) => {
   const [[next], nextActions] = useInput('');
   const appendItem = () => {
     if (next) {

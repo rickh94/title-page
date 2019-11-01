@@ -16,7 +16,7 @@
     "prop-types": "latest"
   },
   "scripts": {
-    "build": "parcel build --public-url /static src/index.html",
+    "build": "rm -rf dist/* && parcel build --public-url /static src/index.html",
     "watch": "parcel watch --public-url /static src/index.html",
     "pretest": "npm run build",
     "debug": "npm run build && NODE_ENV=debug jest",

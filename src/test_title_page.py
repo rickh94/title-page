@@ -1,3 +1,4 @@
+import tempfile
 import uuid
 from pathlib import Path
 
@@ -5,7 +6,6 @@ import pytest
 import requests
 from _pytest.monkeypatch import MonkeyPatch
 from starlette.testclient import TestClient
-import random
 
 import title_page
 from title_page import app
@@ -43,6 +43,34 @@ def test_create(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path):
     assert response.ok
     assert response.json()["filename"] == "111-111-111-111.pdf"
     assert response.json()["url"] == "/media/111-111-111-111.pdf"
+
+
+def test_create_with_font(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path):
+    def fake_uuid(*args):
+        return "111-111-111-111"
+
+    monkeypatch.setattr(uuid, "uuid4", fake_uuid)
+    monkeypatch.setattr(title_page, "PDF_PATH", tmp_path)
+    monkeypatch.setattr(title_page, "COMPLETIONS_PATH", tmp_path)
+    monkeypatch.setattr(tempfile, "mkdtemp", lambda: tmp_path)
+    response = test_client.post(
+        "/generate",
+        json={
+            "title": "Symphony No. 5",
+            "composers": ["Ludwig van Beethoven"],
+            "part": "Horn I",
+            "extra_info": ["Urtext"],
+            "part_additional": "in F",
+            "font": "Open Sans",
+        },
+    )
+    assert response.ok
+    assert response.json()["filename"] == "111-111-111-111.pdf"
+    assert response.json()["url"] == "/media/111-111-111-111.pdf"
+
+    html_path = tmp_path / "111-111-111-111.html"
+    with html_path.open("r") as html_file:
+        assert "font-family: 'Open Sans'" in html_file.read()
 
 
 def test_create_non_ascii(
