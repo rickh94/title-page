@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
-import 'milligram/dist/milligram.min.css'
+import React, { useState } from 'react';
+import 'milligram/dist/milligram.min.css';
 
-import './App.css'
+import './App.css';
 
-import Form from './components/Form/Form.jsx'
-import Frame from './components/Frame/Frame.jsx'
+import Form from './components/Form/Form.jsx';
+import Frame from './components/Frame/Frame.jsx';
 
 const App = () => {
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState('');
   return (
     <div className="container" style={{ height: '94vh' }}>
       <div
@@ -17,7 +17,7 @@ const App = () => {
       >
         <h1 className="main-heading">Sheet Music Title Page Creator</h1>
       </div>
-      <div className="row" style={{ height: '4vh' }} data-testid="app-heading">
+      <div className="row app-heading" style={{ height: '4vh' }} data-testid="app-heading">
         <h4>Enter Piece Information</h4>
       </div>
       <div className="form-frame-container" style={{ height: '84vh' }}>
@@ -25,7 +25,7 @@ const App = () => {
         <Frame url={url} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

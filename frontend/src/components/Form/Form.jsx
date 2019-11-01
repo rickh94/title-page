@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import useInput from 'react-hanger/array/useInput';
 import useArray from 'react-hanger/array/useArray';
 import useBoolean from 'react-hanger/array/useBoolean';
@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { useDropzone } from 'react-dropzone';
 
 import './Form.css';
+import Autocomplete from '../Autocomplete/Autocomplete.jsx';
 
 const fetchPost = async (endpoint, body) => {
   const response = await fetch(endpoint, {
@@ -78,7 +79,7 @@ export const Form = ({ setUrl, url }) => {
   const onDrop = useCallback(acceptedFiles => {
     setFile(acceptedFiles[0]);
   }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const combine = async () => {
     const formData = new FormData();
@@ -151,6 +152,7 @@ export const Form = ({ setUrl, url }) => {
         label="Composers"
         placeholder="Ludwig van Beethoven"
         dirtyActions={composerDirtyActions}
+        completionsEndpoint="/completions/composers"
       />
       <ListField
         items={extraLines}
@@ -173,34 +175,47 @@ export const Form = ({ setUrl, url }) => {
       </button>
       <div style={{ paddingTop: '2rem' }} />
 
-      {url && (
-        <>
-          <p>To add this title page to a file, add it below and click Combine</p>
-          {origFile && <p>Current File: {origFile.name}</p>}
-          <div {...getRootProps()} className="combine-area" data-testid="combine-area">
-            <input {...getInputProps()} />
-            <p>Drag a file here or click to upload</p>
-          </div>
-          <button className="button" onClick={combine} data-testid="combine-button">
-            Combine
+      {/*{url && (*/}
+      <>
+        <p>To add this title page to a file, add it below and click Combine</p>
+        {origFile && <p>Current File: {origFile.name}
+          <button className="button button-clear" title="Remove File" onClick={() => setFile(null)}>
+            <FontAwesomeIcon icon={faTrash} />
           </button>
-        </>
-      )}
+        </p>}
+        <div {...getRootProps()} className="combine-area" data-testid="combine-area">
+          <input {...getInputProps()} />
+          <p>Drag a file here or click to upload</p>
+        </div>
+        <button className="button" onClick={combine} data-testid="combine-button">
+          Combine
+        </button>
+      </>
+      {/*)}*/}
     </div>
   );
 };
 
-export const ListField = ({ items, actions, name, label, placeholder, dirtyActions }) => {
+export const ListField = ({
+  items,
+  actions,
+  name,
+  label,
+  placeholder,
+  dirtyActions,
+  completionsEndpoint,
+}) => {
   const [[next], nextActions] = useInput('');
   const appendItem = () => {
-    actions.push(next);
-    nextActions.clear();
-    dirtyActions.setFalse();
+    if (next) {
+      actions.push(next);
+      nextActions.clear();
+      dirtyActions.setFalse();
+    }
   };
 
   const submitIfEnter = event => {
-    const code = event.keyCode ? event.keyCode : event.which;
-    if (code === 13) {
+    if (event.key === 'Enter') {
       appendItem();
     }
   };
@@ -208,28 +223,44 @@ export const ListField = ({ items, actions, name, label, placeholder, dirtyActio
   return (
     <>
       <label htmlFor={`add-${name}`}>{label}</label>
-      <div className="row" style={{ padding: '0 1rem' }}>
-        <input
-          type="text"
-          name={`add-${name}`}
+      {completionsEndpoint ?
+        <Autocomplete
           id={`add-${name}`}
+          completionsEndpoint={completionsEndpoint}
           value={next}
-          onChange={e => {
-            dirtyActions.setTrue();
-            nextActions.onChange(e);
-          }}
-          onKeyUp={submitIfEnter}
-          placeholder={placeholder}
-          data-testid={`${name}-next-input`}
+          valueActions={nextActions}
+          onSubmit={appendItem}
+          placeholder="Ludwig van Beethoven"
+          dirtyActions={dirtyActions}
         />
-        <button
-          className="button button-clear"
-          onClick={appendItem}
-          data-testid={`${name}-add-button`}
-        >
-          <FontAwesomeIcon icon={faPlus} />
-        </button>
-      </div>
+        :
+        <div className="row button-row">
+          <div className="column column-90" style={{ padding: 0 }}>
+            <input
+              type="text"
+              name={`add-${name}`}
+              id={`add-${name}`}
+              value={next}
+              onChange={e => {
+                dirtyActions.setTrue();
+                nextActions.onChange(e);
+              }}
+              onKeyUp={submitIfEnter}
+              placeholder={placeholder}
+              data-testid={`${name}-next-input`}
+            />
+          </div>
+          <div className="column column-10" style={{ padding: 0 }}>
+            <button
+              className="button button-clear"
+              onClick={appendItem}
+              data-testid={`${name}-add-button`}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
+          </div>
+        </div>
+      }
       <ul id={`${name}s`} data-testid={`${name}-list`}>
         {items.map((item, idx) => (
           <li key={idx} data-testid={`${name}-item-${idx}`}>
@@ -255,6 +286,7 @@ ListField.propTypes = {
   label: PropTypes.string.isRequired,
   placeholder: PropTypes.string.isRequired,
   dirtyActions: PropTypes.object.isRequired,
+  completionsEndpoint: PropTypes.string,
 };
 
 Form.propTypes = {

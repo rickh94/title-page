@@ -1,26 +1,32 @@
 .main-heading {
-    font-size: 5vw
+  font-size: 5vw;
 }
 
 .app-title {
-    height: 6vw;
+  height: 6vw;
+  margin: 1rem 0;
+}
+
+.app-heading {
+  margin: 1rem 0;
 }
 
 .form-frame-container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
+
 @media (min-width: 1280px) {
-    .main-heading {
-        font-size: 4.2rem;
-    }
+  .main-heading {
+    font-size: 4.2rem;
+  }
 
-    .app-title {
-        height: 4.5rem;
-    }
+  .app-title {
+    height: 4.5rem;
+  }
 
-    .form-frame-container {
-        flex-direction: row;
-    }
+  .form-frame-container {
+    flex-direction: row;
+  }
 }

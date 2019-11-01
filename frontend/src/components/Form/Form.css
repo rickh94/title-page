@@ -6,7 +6,6 @@
   display: flex;
   flex-direction: column;
   align-content: space-around;
-  /*align-items: space-around;*/
   margin-bottom: 1rem;
 }
 
@@ -23,6 +22,12 @@
 .input-form {
   width: 100%
 }
+
+.button-row {
+  padding: 0 1rem;
+}
+
+.
 
 @media (min-width: 1280px) {
   .input-form {

@@ -1,35 +1,61 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import './Autocomplete.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-function Autocomplete({ suggestions }) {
+function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, placeholder, dirtyActions }) {
   const [activeSuggestion, setActiveSuggestion] = useState(0);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [userInput, setUserInput] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    const getSuggestions = async () => {
+      try {
+        const response = await fetch(completionsEndpoint);
+        setSuggestions(await response.json() || []);
+      } catch (err) {
+        console.error('Could not get suggestions', err);
+      }
+    };
+    // noinspection JSIgnoredPromiseFromCall
+    getSuggestions();
+  }, []);
 
   const onChange = event => {
-    setUserInput(event.currentTarget.value);
+    valueActions.onChange(event);
     setFilteredSuggestions(suggestions.filter(
       suggestion => suggestion.toLowerCase().indexOf(event.currentTarget.value.toLowerCase()) > -1,
     ));
     setActiveSuggestion(0);
     setShowSuggestions(true);
+    dirtyActions.setTrue();
   };
 
   const onClick = event => {
     setActiveSuggestion(0);
     setFilteredSuggestions([]);
     setShowSuggestions(false);
-    setUserInput(event.currentTarget.innerText);
+    valueActions.setValue(event.currentTarget.innerText);
   };
 
   const onKeyDown = event => {
+    if (!value) {
+      return;
+    }
+    if (!filteredSuggestions.length) {
+      if (event.key === 'Enter') {
+        onSubmit();
+      }
+      return;
+    }
     if (event.key === 'Enter') {
       setActiveSuggestion(0);
       setShowSuggestions(false);
-      setUserInput(filteredSuggestions[activeSuggestion]);
+      valueActions.setValue(filteredSuggestions[activeSuggestion]);
+      setFilteredSuggestions([]);
     } else if (event.key === 'ArrowUp') {
       setActiveSuggestion(prevActiveSuggestion =>
         prevActiveSuggestion === 0 ? prevActiveSuggestion : prevActiveSuggestion - 1,
@@ -44,7 +70,7 @@ function Autocomplete({ suggestions }) {
 
   let suggestionsListComponent;
 
-  if (showSuggestions && userInput) {
+  if (showSuggestions && value) {
     if (filteredSuggestions.length) {
       suggestionsListComponent = (
         <ul className="suggestions">
@@ -69,7 +95,7 @@ function Autocomplete({ suggestions }) {
     } else {
       suggestionsListComponent = (
         <div className="no-suggestions">
-          <em>No suggestions, you're on your own!</em>
+          <em>No suggestions</em>
         </div>
       );
     }
@@ -77,15 +103,40 @@ function Autocomplete({ suggestions }) {
 
   return (
     <>
-      <input type="text" onChange={onChange} onKeyDown={onKeyDown} value={userInput} />
-      {suggestionsListComponent}
+      <div className="row button-row">
+        <div className="column column-90" style={{ padding: 0 }}>
+          <input
+            type="text"
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            value={value}
+            className="autocomplete-input"
+            placeholder={placeholder}
+          />
+        </div>
+        <div className="column column-10" style={{ padding: 0 }}>
+          <button className="button button-clear b-0" onClick={onSubmit}>
+            <FontAwesomeIcon icon={faPlus} />
+          </button>
+        </div>
+      </div>
+      <div className="row">
+        <div className="column column-90">
+          {suggestionsListComponent}
+        </div>
+      </div>
     </>
   );
 
 }
 
 Autocomplete.propTypes = {
-  suggestions: PropTypes.arrayOf(PropTypes.string).isRequired,
+  completionsEndpoint: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  valueActions: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  dirtyActions: PropTypes.object.isRequired,
 };
 
 
