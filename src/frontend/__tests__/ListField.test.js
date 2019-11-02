@@ -4,19 +4,34 @@ import React from 'react';
 
 describe('ListField', () => {
   let dirtyActions;
+  let mockActions;
   beforeEach(() => {
     dirtyActions = {
       toggle: jest.fn(),
       setTrue: jest.fn(),
       setFalse: jest.fn(),
     };
-  });
-
-  it('render items and remove buttons for each item', () => {
-    const mockActions = {
+    mockActions = {
       push: jest.fn(),
       removeIndex: jest.fn(),
     };
+  });
+
+  it('matches the snapshot', () => {
+    const { container } = render(
+      <ListField
+        items={['one', 'two', 'three']}
+        actions={mockActions}
+        name="test-name"
+        label="Label Test"
+        placeholder="placeholder test"
+        dirtyActions={dirtyActions}
+      />);
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('render items and remove buttons for each item', () => {
     const { queryByTestId, getByTestId, container } = render(
       <ListField
         items={['one', 'two', 'three']}
@@ -25,7 +40,7 @@ describe('ListField', () => {
         label="Label Test"
         placeholder="placeholder test"
         dirtyActions={dirtyActions}
-      />
+      />,
     );
 
     expect(container.querySelectorAll('li').length).toEqual(3);
@@ -44,10 +59,6 @@ describe('ListField', () => {
   });
 
   it('adds value from input on click', () => {
-    const mockActions = {
-      push: jest.fn(),
-      removeIndex: jest.fn(),
-    };
     const { getByTestId } = render(
       <ListField
         items={[]}
@@ -67,10 +78,6 @@ describe('ListField', () => {
   });
 
   it('removes item when remove button is clicked', () => {
-    const mockActions = {
-      push: jest.fn(),
-      removeIndex: jest.fn(),
-    };
     const { getByTestId, container } = render(
       <ListField
         items={['one', 'two', 'three']}

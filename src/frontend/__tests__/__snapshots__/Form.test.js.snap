@@ -62,6 +62,8 @@ exports[`Form matches snapshot 1`] = `
         >
           <input
             class="autocomplete-input"
+            data-testid="composer-next-input"
+            id="add-composer"
             placeholder="Ludwig van Beethoven"
             type="text"
             value=""
@@ -73,6 +75,7 @@ exports[`Form matches snapshot 1`] = `
         >
           <button
             class="button button-clear b-0"
+            data-testid="composer-add-button"
           >
             <svg
               aria-hidden="true"

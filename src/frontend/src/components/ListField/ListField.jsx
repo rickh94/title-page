@@ -8,14 +8,14 @@ import PropTypes from 'prop-types';
 import './ListField.css';
 
 const ListField = ({
-                     items,
-                     actions,
-                     name,
-                     label,
-                     placeholder,
-                     dirtyActions,
-                     completionsEndpoint,
-                   }) => {
+  items,
+  actions,
+  name,
+  label,
+  placeholder,
+  dirtyActions,
+  completionsEndpoint,
+}) => {
   const [[next], nextActions] = useInput('');
   const appendItem = () => {
     if (next) {
@@ -77,8 +77,11 @@ const ListField = ({
         {items.length > 0 && (
           <ul id={`${name}s`} data-testid={`${name}-list`} className="list-field__list">
             {items.map((item, idx) => (
-              <li key={idx} data-testid={`${name}-item-${idx}`}
-                  className="list-field__list-item">
+              <li
+                key={idx}
+                data-testid={`${name}-item-${idx}`}
+                className="list-field__list-item"
+              >
                 {item}
                 <button
                   className="button button-clear"

@@ -1,23 +1,68 @@
 import React from 'react';
-import { render, fireEvent, cleanup, act } from '@testing-library/react';
-import { Form} from '../src/components/Form/Form.jsx';
+import { act, cleanup, fireEvent, render } from '@testing-library/react';
+import { Form } from '../src/components/Form/Form.jsx';
 import fetchMock from 'fetch-mock';
 import Swal from 'sweetalert2';
-import { ListField } from '../src/components/ListField/ListField';
 
+const setUrl = jest.fn();
 afterEach(() => {
   cleanup();
   fetchMock.restore();
+  setUrl.mockReset();
 });
 
 describe('Form', () => {
+  const basicRender = () => render(<Form url="" setUrl={setUrl} />);
+  const basicFillForm = getByTestId => {
+    fireEvent.change(getByTestId('title'), { target: { value: 'Test Title' } });
+    fireEvent.change(getByTestId('part-name'), { target: { value: 'Test Part Name' } });
+    fireEvent.change(getByTestId('part-additional'), {
+      target: { value: 'Additional Part Info' },
+    });
+    fireEvent.click(getByTestId('submit-button'));
+  };
+
+  const beforeCombine = () => {
+    window.open = jest.fn();
+    const setUrl = jest.fn();
+    const { getByTestId } = render(<Form url="http://test.test" setUrl={setUrl} />);
+    basicFillForm(getByTestId);
+    return {
+      getByTestId,
+      windowOpen: window.open,
+    };
+  };
+
+  const performCombine = async (getByTestId) => {
+    const mockFile = new File(['one two three'], 'test-file.pdf', {
+      type: 'application/pdf',
+    });
+    mockFile.filename = 'test-file.pdf';
+    await fireEvent.drop(getByTestId('combine-area'), {
+      target: {
+        files: [mockFile],
+      },
+    });
+    await fireEvent.click(getByTestId('combine-button'));
+    await act(async () => await fetchMock.flush(true));
+  };
+
+  const submitCombine = async () => {
+    const swalSpy = jest.spyOn(Swal, 'fire');
+    const { getByTestId, windowOpen } = beforeCombine();
+    await act(async () => await fetchMock.flush(true));
+    await performCombine(getByTestId);
+    return {
+      swalSpy,
+      windowOpen,
+    };
+  };
   it('matches snapshot', () => {
-    const { container } = render(<Form url="" setUrl={jest.fn()}/>);
+    const { container } = render(<Form url="" setUrl={jest.fn()} />);
     expect(container).toMatchSnapshot();
   });
 
   it('submits form data', async done => {
-    const setUrl = jest.fn();
     fetchMock.postOnce('/generate', {
       status: 200,
       body: {
@@ -25,19 +70,14 @@ describe('Form', () => {
         filename: 'test.pdf',
       },
     });
-    const { getByTestId } = render(<Form url="" setUrl={setUrl}/>);
-    fireEvent.change(getByTestId('title'), { target: { value: 'Test Title' } });
-    fireEvent.change(getByTestId('part-name'), { target: { value: 'Test Part Name' } });
-    fireEvent.change(getByTestId('part-additional'), {
-      target: { value: 'Additional Part Info' },
-    });
-    fireEvent.click(getByTestId('submit-button'));
+    const { getByTestId } = basicRender();
+    basicFillForm(getByTestId);
 
     expect(fetchMock.lastOptions().body).toEqual(
       JSON.stringify({
         title: 'Test Title',
         composers: [],
-        font: "Cormorant Garamond",
+        font: 'Cormorant Garamond',
         part: 'Test Part Name',
         extra_info: [],
         part_additional: 'Additional Part Info',
@@ -49,24 +89,18 @@ describe('Form', () => {
   });
 
   it('alerts on submit error', async done => {
-    const setUrl = jest.fn();
     const spy = jest.spyOn(Swal, 'fire');
     fetchMock.postOnce('/generate', {
       throws: new Error('Network Error'),
     });
-    const { getByTestId } = render(<Form url="" setUrl={setUrl}/>);
-    fireEvent.change(getByTestId('title'), { target: { value: 'Test Title' } });
-    fireEvent.change(getByTestId('part-name'), { target: { value: 'Test Part Name' } });
-    fireEvent.change(getByTestId('part-additional'), {
-      target: { value: 'Additional Part Info' },
-    });
-    fireEvent.click(getByTestId('submit-button'));
+    const { getByTestId } = basicRender();
+    basicFillForm(getByTestId);
 
     expect(fetchMock.lastOptions().body).toEqual(
       JSON.stringify({
         title: 'Test Title',
         composers: [],
-        font: "Cormorant Garamond",
+        font: 'Cormorant Garamond',
         part: 'Test Part Name',
         extra_info: [],
         part_additional: 'Additional Part Info',
@@ -82,7 +116,6 @@ describe('Form', () => {
   });
 
   it('alerts on submit error response', async done => {
-    const setUrl = jest.fn();
     const spy = jest.spyOn(Swal, 'fire');
     fetchMock.postOnce('/generate', {
       status: 400,
@@ -90,19 +123,14 @@ describe('Form', () => {
         detail: 'Wrong Data',
       },
     });
-    const { getByTestId } = render(<Form url="" setUrl={setUrl}/>);
-    fireEvent.change(getByTestId('title'), { target: { value: 'Test Title' } });
-    fireEvent.change(getByTestId('part-name'), { target: { value: 'Test Part Name' } });
-    fireEvent.change(getByTestId('part-additional'), {
-      target: { value: 'Additional Part Info' },
-    });
-    fireEvent.click(getByTestId('submit-button'));
+    const { getByTestId } = basicRender();
+    basicFillForm(getByTestId);
 
     expect(fetchMock.lastOptions().body).toEqual(
       JSON.stringify({
         title: 'Test Title',
         composers: [],
-        font: "Cormorant Garamond",
+        font: 'Cormorant Garamond',
         part: 'Test Part Name',
         extra_info: [],
         part_additional: 'Additional Part Info',
@@ -118,7 +146,7 @@ describe('Form', () => {
   });
 
   it('renders a file upload if a title page has already been generated', () => {
-    const { queryByTestId } = render(<Form url="http://test.test" setUrl={jest.fn()}/>);
+    const { queryByTestId } = render(<Form url="http://test.test" setUrl={jest.fn()} />);
     expect(queryByTestId('combine-area')).toBeTruthy();
     expect(queryByTestId('combine-button')).toBeTruthy();
   });
@@ -138,21 +166,14 @@ describe('Form', () => {
         filename: 'test.pdf',
       },
     });
-    window.open = jest.fn();
-    const setUrl = jest.fn();
-    const { getByTestId } = render(<Form url="http://test.test" setUrl={setUrl}/>);
-    fireEvent.change(getByTestId('title'), { target: { value: 'Test Title' } });
-    fireEvent.change(getByTestId('part-name'), { target: { value: 'Test Part Name' } });
-    fireEvent.change(getByTestId('part-additional'), {
-      target: { value: 'Additional Part Info' },
-    });
-    fireEvent.click(getByTestId('submit-button'));
 
+
+    const {getByTestId, windowOpen} = beforeCombine();
     expect(fetchMock.lastOptions().body).toEqual(
       JSON.stringify({
         title: 'Test Title',
         composers: [],
-        font: "Cormorant Garamond",
+        font: 'Cormorant Garamond',
         part: 'Test Part Name',
         extra_info: [],
         part_additional: 'Additional Part Info',
@@ -160,21 +181,10 @@ describe('Form', () => {
     );
     await act(async () => await fetchMock.flush(true));
 
-    const mockFile = new File(['one two three'], 'test-file.pdf', {
-      type: 'application/pdf',
-    });
-    mockFile.filename = 'test-file.pdf';
-    await fireEvent.drop(getByTestId('combine-area'), {
-      target: {
-        files: [mockFile],
-      },
-    });
-    await fireEvent.click(getByTestId('combine-button'));
-
-    await act(async () => await fetchMock.flush(true));
+    await performCombine(getByTestId);
     expect(fetchMock.lastOptions().body.get('file').filename).toEqual('test-file.pdf');
     expect(fetchMock.lastOptions().body.get('title_page_filename')).toEqual('title.pdf');
-    expect(window.open).toHaveBeenCalledWith('http://test.test2', '_blank');
+    expect(windowOpen).toHaveBeenCalledWith('http://test.test2', '_blank');
     done();
   });
 
@@ -192,29 +202,8 @@ describe('Form', () => {
         detail: 'Something has gone wrong',
       },
     });
-    window.open = jest.fn();
-    const spy = jest.spyOn(Swal, 'fire');
-    const { getByTestId } = render(<Form url="http://test.test" setUrl={jest.fn()}/>);
-    fireEvent.change(getByTestId('title'), { target: { value: 'Test Title' } });
-    fireEvent.change(getByTestId('part-name'), { target: { value: 'Test Part Name' } });
-    fireEvent.change(getByTestId('part-additional'), {
-      target: { value: 'Additional Part Info' },
-    });
-    fireEvent.click(getByTestId('submit-button'));
-    await act(async () => await fetchMock.flush(true));
-
-    const mockFile = new File(['one two three'], 'test-file.pdf', {
-      type: 'application/pdf',
-    });
-    mockFile.filename = 'test-file.pdf';
-    await fireEvent.drop(getByTestId('combine-area'), {
-      target: {
-        files: [mockFile],
-      },
-    });
-    await fireEvent.click(getByTestId('combine-button'));
-    await act(async () => await fetchMock.flush(true));
-    expect(spy).toHaveBeenCalledWith({
+    const { swalSpy } = await submitCombine();
+    expect(swalSpy).toHaveBeenCalledWith({
       title: 'Error',
       text: 'Something has gone wrong',
       type: 'error',
@@ -222,7 +211,7 @@ describe('Form', () => {
     done();
   });
 
-  it('alerts if combine thows an error', async done => {
+  it('alerts if combine throws an error', async done => {
     fetchMock.postOnce('/generate', {
       status: 200,
       body: {
@@ -233,29 +222,8 @@ describe('Form', () => {
     fetchMock.postOnce('/combine', {
       throws: new Error('Network Error'),
     });
-    window.open = jest.fn();
-    const spy = jest.spyOn(Swal, 'fire');
-    const { getByTestId } = render(<Form url="http://test.test" setUrl={jest.fn()}/>);
-    fireEvent.change(getByTestId('title'), { target: { value: 'Test Title' } });
-    fireEvent.change(getByTestId('part-name'), { target: { value: 'Test Part Name' } });
-    fireEvent.change(getByTestId('part-additional'), {
-      target: { value: 'Additional Part Info' },
-    });
-    fireEvent.click(getByTestId('submit-button'));
-    await act(async () => await fetchMock.flush(true));
-
-    const mockFile = new File(['one two three'], 'test-file.pdf', {
-      type: 'application/pdf',
-    });
-    mockFile.filename = 'test-file.pdf';
-    await fireEvent.drop(getByTestId('combine-area'), {
-      target: {
-        files: [mockFile],
-      },
-    });
-    await fireEvent.click(getByTestId('combine-button'));
-    await act(async () => await fetchMock.flush(true));
-    expect(spy).toHaveBeenCalledWith({
+    const { swalSpy } = await submitCombine();
+    expect(swalSpy).toHaveBeenCalledWith({
       title: 'Error',
       text: 'Error: Network Error',
       type: 'error',
