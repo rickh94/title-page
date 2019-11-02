@@ -1,0 +1,12 @@
+.list-field {
+    margin-bottom: 1.5rem;
+}
+
+.list-field__list {
+    margin-bottom: 0;
+}
+
+.list-field__list-item {
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+}

@@ -1,7 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState, Suspense } from 'react';
 import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import useInput from 'react-hanger/array/useInput';
 import useArray from 'react-hanger/array/useArray';
 import useBoolean from 'react-hanger/array/useBoolean';
@@ -9,8 +7,12 @@ import Swal from 'sweetalert2';
 import { useDropzone } from 'react-dropzone';
 
 import './Form.css';
-import Autocomplete from '../Autocomplete/Autocomplete.jsx';
-import FontSelect from '../FontSelect/FontSelect';
+// import FontSelect from '../FontSelect/FontSelect';
+import ListField from '../ListField/ListField';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+
+const FontSelect = React.lazy(() => import('../FontSelect/FontSelect'));
 
 const fetchPost = async (endpoint, body) => {
   const response = await fetch(endpoint, {
@@ -39,6 +41,7 @@ export const Form = ({ setUrl, url }) => {
   const [titlePageFileName, setTitlePageFileName] = useState('');
   const [composerDirty, composerDirtyActions] = useBoolean(false);
   const [extraLinesDirty, extraLinesDirtyActions] = useBoolean(false);
+  const [showSelectFont, showSelectFontActions] = useBoolean(false);
 
   const clear = () => {
     titleActions.clear();
@@ -162,29 +165,45 @@ export const Form = ({ setUrl, url }) => {
         placeholder="in C minor"
         dirtyActions={extraLinesDirtyActions}
       />
-      <FontSelect value={font} valueActions={fontActions} />
-      <button className="button" onClick={submit} data-testid="submit-button">
-        Submit
-      </button>
-      <button
-        className="button-outline"
-        style={{ marginLeft: '1rem' }}
-        onClick={clear}
-        data-testid="clear-button"
-      >
-        Clear
-      </button>
+      <div className="row button-row">
+        <button
+          className="button-clear px-0"
+          title="Show select font"
+          onClick={() => showSelectFontActions.toggle()}
+          style={{ fontSize: '1.5rem' }}
+        >
+          Select Font{' '}
+          <FontAwesomeIcon
+            className="chevron-icon"
+            icon={showSelectFont ? faChevronUp : faChevronDown}
+          />
+        </button>
+      </div>
+      {showSelectFont &&
+      <Suspense fallback={<div>Loading...</div>}>
+        <FontSelect value={font} valueActions={fontActions} />
+      </Suspense>
+      }
+      <div className="row button-row mt-1">
+        <button className="button" onClick={submit} data-testid="submit-button">
+          Submit
+        </button>
+        <button
+          className="button-outline"
+          style={{ marginLeft: '1rem' }}
+          onClick={clear}
+          data-testid="clear-button"
+        >
+          Clear
+        </button>
+
+      </div>
       <div style={{ paddingTop: '2rem' }} />
 
       {url && (
         <>
           <p>To add this title page to a file, add it below and click Combine</p>
-          {origFile && <p>Current File: {origFile.name}
-            {/*<button className="button button-clear" title="Remove File"*/}
-            {/*        onClick={() => setFile(null)}>*/}
-            {/*  <FontAwesomeIcon icon={faTrash} />*/}
-            {/*</button>*/}
-          </p>}
+          {origFile && <p>Current File: {origFile.name}</p>}
           <div {...getRootProps()} className="combine-area" data-testid="combine-area">
             <input {...getInputProps()} />
             <p>Drag a file here or click to upload</p>
@@ -196,99 +215,6 @@ export const Form = ({ setUrl, url }) => {
       )}
     </div>
   );
-};
-
-export const ListField = ({
-                            items,
-                            actions,
-                            name,
-                            label,
-                            placeholder,
-                            dirtyActions,
-                            completionsEndpoint,
-                          }) => {
-  const [[next], nextActions] = useInput('');
-  const appendItem = () => {
-    if (next) {
-      actions.push(next);
-      nextActions.clear();
-      dirtyActions.setFalse();
-    }
-  };
-
-  const submitIfEnter = event => {
-    if (event.key === 'Enter') {
-      appendItem();
-    }
-  };
-
-  return (
-    <>
-      <label htmlFor={`add-${name}`}>{label}</label>
-      {completionsEndpoint ?
-        <Autocomplete
-          id={`add-${name}`}
-          completionsEndpoint={completionsEndpoint}
-          value={next}
-          valueActions={nextActions}
-          onSubmit={appendItem}
-          placeholder="Ludwig van Beethoven"
-          dirtyActions={dirtyActions}
-        />
-        :
-        <div className="row button-row">
-          <div className="column column-90" style={{ padding: 0 }}>
-            <input
-              type="text"
-              name={`add-${name}`}
-              id={`add-${name}`}
-              value={next}
-              onChange={e => {
-                dirtyActions.setTrue();
-                nextActions.onChange(e);
-              }}
-              onKeyUp={submitIfEnter}
-              placeholder={placeholder}
-              data-testid={`${name}-next-input`}
-            />
-          </div>
-          <div className="column column-10" style={{ padding: 0 }}>
-            <button
-              className="button button-clear"
-              onClick={appendItem}
-              data-testid={`${name}-add-button`}
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
-          </div>
-        </div>
-      }
-      <ul id={`${name}s`} data-testid={`${name}-list`}>
-        {items.map((item, idx) => (
-          <li key={idx} data-testid={`${name}-item-${idx}`}>
-            {item}
-            <button
-              className="button button-clear"
-              onClick={() => actions.removeIndex(idx)}
-              data-testid={`${name}-item-${idx}-remove`}
-            >
-              <FontAwesomeIcon icon={faMinus} />
-            </button>
-          </li>
-        ))}
-      </ul>
-    </>
-  );
-};
-
-ListField.propTypes = {
-  items: PropTypes.array.isRequired,
-  actions: PropTypes.object.isRequired,
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
-  dirtyActions: PropTypes.object.isRequired,
-  completionsEndpoint: PropTypes.string,
 };
 
 Form.propTypes = {

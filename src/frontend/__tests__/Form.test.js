@@ -1,8 +1,9 @@
 import React from 'react';
 import { render, fireEvent, cleanup, act } from '@testing-library/react';
-import { Form, ListField } from '../src/components/Form/Form.jsx';
+import { Form} from '../src/components/Form/Form.jsx';
 import fetchMock from 'fetch-mock';
 import Swal from 'sweetalert2';
+import { ListField } from '../src/components/ListField/ListField';
 
 afterEach(() => {
   cleanup();
@@ -36,6 +37,7 @@ describe('Form', () => {
       JSON.stringify({
         title: 'Test Title',
         composers: [],
+        font: "Cormorant Garamond",
         part: 'Test Part Name',
         extra_info: [],
         part_additional: 'Additional Part Info',
@@ -64,6 +66,7 @@ describe('Form', () => {
       JSON.stringify({
         title: 'Test Title',
         composers: [],
+        font: "Cormorant Garamond",
         part: 'Test Part Name',
         extra_info: [],
         part_additional: 'Additional Part Info',
@@ -99,6 +102,7 @@ describe('Form', () => {
       JSON.stringify({
         title: 'Test Title',
         composers: [],
+        font: "Cormorant Garamond",
         part: 'Test Part Name',
         extra_info: [],
         part_additional: 'Additional Part Info',
@@ -148,6 +152,7 @@ describe('Form', () => {
       JSON.stringify({
         title: 'Test Title',
         composers: [],
+        font: "Cormorant Garamond",
         part: 'Test Part Name',
         extra_info: [],
         part_additional: 'Additional Part Info',
@@ -256,85 +261,5 @@ describe('Form', () => {
       type: 'error',
     });
     done();
-  });
-});
-
-describe('ListField', () => {
-  it('render items and remove buttons for each item', () => {
-    const mockActions = {
-      push: jest.fn(),
-      removeIndex: jest.fn(),
-    };
-    const { queryByTestId, getByTestId, container } = render(
-      <ListField
-        items={['one', 'two', 'three']}
-        actions={mockActions}
-        name="test-name"
-        label="Label Test"
-        placeholder="placeholder test"
-      />,
-    );
-
-    expect(container.querySelectorAll('li').length).toEqual(3);
-
-    expect(queryByTestId('test-name-item-0')).toBeTruthy();
-    expect(queryByTestId('test-name-item-1')).toBeTruthy();
-    expect(queryByTestId('test-name-item-2')).toBeTruthy();
-
-    expect(getByTestId('test-name-item-0').textContent).toEqual('one');
-    expect(getByTestId('test-name-item-1').textContent).toEqual('two');
-    expect(getByTestId('test-name-item-2').textContent).toEqual('three');
-
-    expect(queryByTestId('test-name-item-0-remove')).toBeTruthy();
-    expect(queryByTestId('test-name-item-1-remove')).toBeTruthy();
-    expect(queryByTestId('test-name-item-2-remove')).toBeTruthy();
-  });
-
-  it('adds value from input on click', () => {
-    const mockActions = {
-      push: jest.fn(),
-      removeIndex: jest.fn(),
-    };
-    const { getByTestId } = render(
-      <ListField
-        items={[]}
-        actions={mockActions}
-        name="test-name"
-        label="Label Test"
-        placeholder="placeholder test"
-      />,
-    );
-    fireEvent.change(getByTestId('test-name-next-input'), {
-      target: { value: 'next value' },
-    });
-    fireEvent.click(getByTestId('test-name-add-button'));
-    expect(mockActions.push).toHaveBeenCalledWith('next value');
-  });
-
-  it('removes item when remove button is clicked', () => {
-    const mockActions = {
-      push: jest.fn(),
-      removeIndex: jest.fn(),
-    };
-    const { getByTestId, container } = render(
-      <ListField
-        items={['one', 'two', 'three']}
-        actions={mockActions}
-        name="test-name"
-        label="Label Test"
-        placeholder="placeholder test"
-      />,
-    );
-
-    expect(container.querySelectorAll('li').length).toEqual(3);
-
-    fireEvent.click(getByTestId('test-name-item-0-remove'));
-    expect(mockActions.removeIndex).toHaveBeenCalledWith(0);
-
-    fireEvent.click(getByTestId('test-name-item-1-remove'));
-    expect(mockActions.removeIndex).toHaveBeenCalledWith(1);
-
-    fireEvent.click(getByTestId('test-name-item-2-remove'));
-    expect(mockActions.removeIndex).toHaveBeenCalledWith(2);
   });
 });

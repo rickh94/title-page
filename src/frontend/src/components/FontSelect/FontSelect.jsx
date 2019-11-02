@@ -6,7 +6,7 @@ import './FontSelect.css';
 function FontSelect({ value, valueActions }) {
   return (
     <>
-      <h5>Select Font</h5>
+      <link href="https://fonts.googleapis.com/css?family=Amiri|Cormorant+Garamond|Libre+Baskerville|Montserrat|Open+Sans|PT+Serif&display=swap" rel="stylesheet" />
       <div className="font-select">
         <label htmlFor="cormorant-garamond" className="cormorant">
           <input

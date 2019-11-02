@@ -3,13 +3,13 @@
 exports[`Frame matches snapshot 1`] = `
 <div>
   <div
-    class="display-frame"
+    class="display-frame-wrapper"
     data-testid="frame"
   >
     <object
+      class="display-frame"
       data="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
       data-testid="wrapper-object"
-      style="width: 100%; height: 100%;"
       type="application/pdf"
     >
       <embed

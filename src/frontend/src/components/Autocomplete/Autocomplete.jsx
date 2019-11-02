@@ -5,7 +5,7 @@ import './Autocomplete.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, placeholder, dirtyActions }) {
+function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, placeholder, dirtyActions, name }) {
   const [activeSuggestion, setActiveSuggestion] = useState(0);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -106,16 +106,18 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
       <div className="row button-row">
         <div className="column column-90" style={{ padding: 0 }}>
           <input
+            id={`add-${name}`}
             type="text"
             onChange={onChange}
             onKeyDown={onKeyDown}
             value={value}
             className="autocomplete-input"
             placeholder={placeholder}
+            data-testid={`${name}-next-input`}
           />
         </div>
         <div className="column column-10" style={{ padding: 0 }}>
-          <button className="button button-clear b-0" onClick={onSubmit}>
+          <button className="button button-clear b-0" onClick={onSubmit} data-testid={`${name}-add-button`}>
             <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
@@ -137,6 +139,7 @@ Autocomplete.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   dirtyActions: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 
