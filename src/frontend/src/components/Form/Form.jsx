@@ -43,44 +43,51 @@ export const Form = ({ setUrl, url }) => {
   const [extraLinesDirty, extraLinesDirtyActions] = useBoolean(false);
   const [showSelectFont, showSelectFontActions] = useBoolean(false);
 
-  const clear = () => {
-    titleActions.clear();
-    partNameActions.clear();
-    partAdditionalActions.clear();
-    composersActions.clear();
-    extraLinesActions.clear();
-  };
+  const clear = useCallback(
+    () => {
+      titleActions.clear();
+      partNameActions.clear();
+      partAdditionalActions.clear();
+      composersActions.clear();
+      extraLinesActions.clear();
+    },
+    [titleActions, partAdditionalActions, partAdditionalActions,
+      composersActions, extraLinesActions],
+  );
 
-  const submit = async () => {
-    if (composerDirty || extraLinesDirty) {
-      await Swal.fire({
-        title: 'Data Entered',
-        text: 'You have entered information in a list (composer or extra info) but not added it to the page. ' +
-          'Please click the plus to add it or delete it from the input.',
-        type: 'warning',
-      });
-      return;
-    }
-    const data = {
-      title,
-      composers,
-      font,
-      part: partName,
-      extra_info: extraLines,
-      part_additional: partAdditional,
-    };
-    try {
-      const response = await fetchPost('/generate', data);
-      setUrl(response.url);
-      setTitlePageFileName(response.filename);
-    } catch (e) {
-      await Swal.fire({
-        title: 'Error',
-        text: e.toString(),
-        type: 'error',
-      });
-    }
-  };
+  const submit = useCallback(
+    async () => {
+      if (composerDirty || extraLinesDirty) {
+        await Swal.fire({
+          title: 'Data Entered',
+          text: 'You have entered information in a list (composer or extra info) but not added it to the page. ' +
+            'Please click the plus to add it or delete it from the input.',
+          type: 'warning',
+        });
+        return;
+      }
+      const data = {
+        title,
+        composers,
+        font,
+        part: partName,
+        extra_info: extraLines,
+        part_additional: partAdditional,
+      };
+      try {
+        const response = await fetchPost('/generate', data);
+        setUrl(response.url);
+        setTitlePageFileName(response.filename);
+      } catch (e) {
+        await Swal.fire({
+          title: 'Error',
+          text: e.toString(),
+          type: 'error',
+        });
+      }
+    },
+    [composerDirty, extraLinesDirty, title, composers, font, partName, extraLines, partAdditional, setUrl],
+  );
 
   const onDrop = useCallback(acceptedFiles => {
     setFile(acceptedFiles[0]);
@@ -189,8 +196,7 @@ export const Form = ({ setUrl, url }) => {
           Submit
         </button>
         <button
-          className="button-outline"
-          style={{ marginLeft: '1rem' }}
+          className="button-outline ml-2"
           onClick={clear}
           data-testid="clear-button"
         >
@@ -198,7 +204,7 @@ export const Form = ({ setUrl, url }) => {
         </button>
 
       </div>
-      <div style={{ paddingTop: '2rem' }} />
+      <div className="pt-4" />
 
       {url && (
         <>

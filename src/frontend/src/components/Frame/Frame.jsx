@@ -6,19 +6,19 @@ import './Frame.css';
 const Frame = ({ url }) => {
   return (
     <>
-    <div className="display-frame-wrapper" data-testid="frame">
-      {url && (
-        <object
-          className="display-frame"
-          data={url}
-          type="application/pdf"
-          data-testid="wrapper-object"
-        >
-          <embed src={url} type="application/pdf" data-testid="pdf-embed"/>
-        </object>
-      )}
-    </div>
-      </>
+      <div className="display-frame-wrapper" data-testid="frame">
+        {url && (
+          <object
+            className="display-frame"
+            data={url}
+            type="application/pdf"
+            data-testid="wrapper-object"
+          >
+            <embed src={url} type="application/pdf" data-testid="pdf-embed" />
+          </object>
+        )}
+      </div>
+    </>
   );
 };
 

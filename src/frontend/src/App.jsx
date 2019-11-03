@@ -9,7 +9,7 @@ import Frame from './components/Frame/Frame.jsx';
 const App = () => {
   const [url, setUrl] = useState('');
   return (
-    <div className="container" style={{ height: '94vh' }}>
+    <div className="container app-container">
       <div
         className="row app-title"
         data-testid="app-title"
@@ -17,10 +17,10 @@ const App = () => {
       >
         <h1 className="main-heading">Sheet Music Title Page Creator</h1>
       </div>
-      <div className="row app-heading" style={{ height: '4vh' }} data-testid="app-heading">
+      <div className="row app-heading" data-testid="app-heading">
         <h4>Enter Piece Information</h4>
       </div>
-      <div className="form-frame-container" style={{ height: '84vh' }}>
+      <div className="form-frame-container">
         <Form setUrl={setUrl} url={url} />
         <Frame url={url} />
       </div>

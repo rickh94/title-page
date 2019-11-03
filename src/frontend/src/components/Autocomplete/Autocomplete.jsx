@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import './Autocomplete.css';
@@ -25,7 +25,7 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
     getSuggestions();
   }, []);
 
-  const onChange = event => {
+  const onChange = useCallback(event => {
     valueActions.onChange(event);
     setFilteredSuggestions(suggestions.filter(
       suggestion => suggestion.toLowerCase().indexOf(event.currentTarget.value.toLowerCase()) > -1,
@@ -33,17 +33,16 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
     setActiveSuggestion(0);
     setShowSuggestions(true);
     dirtyActions.setTrue();
-  };
+  }, [valueActions, dirtyActions, suggestions]);
 
-  const onClick = event => {
+  const onClick = useCallback(event => {
     setActiveSuggestion(0);
     setFilteredSuggestions([]);
     setShowSuggestions(false);
     valueActions.setValue(event.currentTarget.textContent);
-  };
+  }, [valueActions, suggestions]);
 
-  const onKeyDown = event => {
-    console.log(filteredSuggestions);
+  const onKeyDown = useCallback(event => {
     if (!value) {
       return;
     }
@@ -68,7 +67,7 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
           prevActiveSuggestion : prevActiveSuggestion + 1,
       );
     }
-  };
+  }, [filteredSuggestions, valueActions, value]);
 
   let suggestionsListComponent;
 
@@ -77,20 +76,14 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
       suggestionsListComponent = (
         <ul className="suggestions" data-testid={`${name}-suggestions`}>
           {filteredSuggestions.map((suggestion, index) => {
-            let className;
-            if (index === activeSuggestion) {
-              className = 'suggestion-active';
-            }
-
             return (
-              <li
-                className={className}
+              <SuggestionItem
                 key={suggestion}
+                active={index === activeSuggestion}
+                suggestion={suggestion}
+                name={name}
                 onClick={onClick}
-                data-testid={`${name}-suggestion-item`}
-              >
-                {suggestion}
-              </li>
+              />
             );
           })}
         </ul>
@@ -120,8 +113,11 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
           />
         </div>
         <div className="column column-10" style={{ padding: 0 }}>
-          <button className="button button-clear b-0" onClick={onSubmit}
-                  data-testid={`${name}-add-button`}>
+          <button
+            className="button button-clear b-0"
+            onClick={onSubmit}
+            data-testid={`${name}-add-button`}
+          >
             <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
@@ -148,3 +144,22 @@ Autocomplete.propTypes = {
 
 
 export default Autocomplete;
+
+export const SuggestionItem = React.memo(function SuggestionItem({ suggestion, name, onClick, active }) {
+  return (
+    <li
+      className={active ? 'suggestion-active' : ''}
+      onClick={onClick}
+      data-testid={`${name}-suggestion-item`}
+    >
+      {suggestion}
+    </li>
+  );
+});
+
+SuggestionItem.propTypes = {
+  suggestion: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  active: PropTypes.bool.isRequired,
+};

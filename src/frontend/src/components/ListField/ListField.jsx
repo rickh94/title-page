@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import useInput from 'react-hanger/array/useInput';
 import Autocomplete from '../Autocomplete/Autocomplete';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,19 +17,19 @@ const ListField = ({
   completionsEndpoint,
 }) => {
   const [[next], nextActions] = useInput('');
-  const appendItem = () => {
+  const appendItem = useCallback(() => {
     if (next) {
       actions.push(next);
       nextActions.clear();
       dirtyActions.setFalse();
     }
-  };
+  }, [actions, next, nextActions, dirtyActions]);
 
-  const submitIfEnter = event => {
+  const submitIfEnter = useCallback(event => {
     if (event.key === 'Enter') {
       appendItem();
     }
-  };
+  }, [appendItem]);
 
   return (
     <div className="list-field">
@@ -45,8 +45,8 @@ const ListField = ({
           name={name}
         />
         :
-        <div className="row button-row" style={{ paddingBottom: 0 }}>
-          <div className="column column-90" style={{ padding: 0, marginBottom: 0 }}>
+        <div className="row button-row pb-0" >
+          <div className="column column-90 mb-0" style={{padding: 0}}>
             <input
               type="text"
               name={`add-${name}`}
@@ -59,12 +59,12 @@ const ListField = ({
               onKeyUp={submitIfEnter}
               placeholder={placeholder}
               data-testid={`${name}-next-input`}
-              style={{ marginBottom: 0 }}
+              className="mb-0"
             />
           </div>
           <div className="column column-10" style={{ padding: 0 }}>
             <button
-              className="button button-clear b-0"
+              className="button button-clear mb-0 pb-0"
               onClick={appendItem}
               data-testid={`${name}-add-button`}
             >
@@ -77,20 +77,13 @@ const ListField = ({
         {items.length > 0 && (
           <ul id={`${name}s`} data-testid={`${name}-list`} className="list-field__list">
             {items.map((item, idx) => (
-              <li
-                key={idx}
-                data-testid={`${name}-item-${idx}`}
-                className="list-field__list-item"
-              >
-                {item}
-                <button
-                  className="button button-clear"
-                  onClick={() => actions.removeIndex(idx)}
-                  data-testid={`${name}-item-${idx}-remove`}
-                >
-                  <FontAwesomeIcon icon={faMinus} />
-                </button>
-              </li>
+              <ListItem
+                key={item}
+                item={item}
+                onClick={() => actions.removeIndex(idx)}
+                name={name}
+                idx={idx}
+              />
             ))}
           </ul>
         )
@@ -111,3 +104,28 @@ ListField.propTypes = {
 };
 
 export default ListField;
+
+export const ListItem = React.memo(function ListItem({ item, onClick, name, idx }) {
+  return (
+    <li
+      className="list-field__list-item"
+      data-testid={`${name}-item-${idx}`}
+    >
+      {item}
+      <button
+        className="button button-clear"
+        onClick={onClick}
+        data-testid={`${name}-item-${idx}-remove`}
+      >
+        <FontAwesomeIcon icon={faMinus} />
+      </button>
+    </li>
+  );
+});
+
+ListItem.propTypes = {
+  item: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  idx: PropTypes.number.isRequired,
+};
