@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListField matches the snapshot 1`] = `
+<div>
+  <div
+    class="list-field"
+  >
+    <label
+      for="add-test-name"
+    >
+      Label Test
+    </label>
+    <div
+      class="row button-row"
+      style="padding-bottom: 0px;"
+    >
+      <div
+        class="column column-90"
+        style="padding: 0px; margin-bottom: 0px;"
+      >
+        <input
+          data-testid="test-name-next-input"
+          id="add-test-name"
+          name="add-test-name"
+          placeholder="placeholder test"
+          style="margin-bottom: 0px;"
+          type="text"
+          value=""
+        />
+      </div>
+      <div
+        class="column column-10"
+        style="padding: 0px;"
+      >
+        <button
+          class="button button-clear b-0"
+          data-testid="test-name-add-button"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-plus fa-w-14 "
+            data-icon="plus"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            viewBox="0 0 448 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <ul
+      class="list-field__list"
+      data-testid="test-name-list"
+      id="test-names"
+    >
+      <li
+        class="list-field__list-item"
+        data-testid="test-name-item-0"
+      >
+        one
+        <button
+          class="button button-clear"
+          data-testid="test-name-item-0-remove"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-minus fa-w-14 "
+            data-icon="minus"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            viewBox="0 0 448 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </li>
+      <li
+        class="list-field__list-item"
+        data-testid="test-name-item-1"
+      >
+        two
+        <button
+          class="button button-clear"
+          data-testid="test-name-item-1-remove"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-minus fa-w-14 "
+            data-icon="minus"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            viewBox="0 0 448 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </li>
+      <li
+        class="list-field__list-item"
+        data-testid="test-name-item-2"
+      >
+        three
+        <button
+          class="button button-clear"
+          data-testid="test-name-item-2-remove"
+        >
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-minus fa-w-14 "
+            data-icon="minus"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            viewBox="0 0 448 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>
+`;

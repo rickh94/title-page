@@ -15,7 +15,8 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
     const getSuggestions = async () => {
       try {
         const response = await fetch(completionsEndpoint);
-        setSuggestions(await response.json() || []);
+        const suggestions = await response.json();
+        setSuggestions(suggestions || []);
       } catch (err) {
         console.error('Could not get suggestions', err);
       }
@@ -38,10 +39,11 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
     setActiveSuggestion(0);
     setFilteredSuggestions([]);
     setShowSuggestions(false);
-    valueActions.setValue(event.currentTarget.innerText);
+    valueActions.setValue(event.currentTarget.textContent);
   };
 
   const onKeyDown = event => {
+    console.log(filteredSuggestions);
     if (!value) {
       return;
     }
@@ -62,7 +64,7 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
       );
     } else if (event.key === 'ArrowDown') {
       setActiveSuggestion(prevActiveSuggestion =>
-        prevActiveSuggestion - 1 === filteredSuggestions.length ?
+        prevActiveSuggestion + 1 === filteredSuggestions.length ?
           prevActiveSuggestion : prevActiveSuggestion + 1,
       );
     }
@@ -73,7 +75,7 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
   if (showSuggestions && value) {
     if (filteredSuggestions.length) {
       suggestionsListComponent = (
-        <ul className="suggestions">
+        <ul className="suggestions" data-testid={`${name}-suggestions`}>
           {filteredSuggestions.map((suggestion, index) => {
             let className;
             if (index === activeSuggestion) {
@@ -85,6 +87,7 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
                 className={className}
                 key={suggestion}
                 onClick={onClick}
+                data-testid={`${name}-suggestion-item`}
               >
                 {suggestion}
               </li>
@@ -95,7 +98,7 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
     } else {
       suggestionsListComponent = (
         <div className="no-suggestions">
-          <em>No suggestions</em>
+          <em data-testid={`${name}-no-suggestions`}>No suggestions</em>
         </div>
       );
     }
@@ -117,7 +120,8 @@ function Autocomplete({ completionsEndpoint, value, valueActions, onSubmit, plac
           />
         </div>
         <div className="column column-10" style={{ padding: 0 }}>
-          <button className="button button-clear b-0" onClick={onSubmit} data-testid={`${name}-add-button`}>
+          <button className="button button-clear b-0" onClick={onSubmit}
+                  data-testid={`${name}-add-button`}>
             <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
