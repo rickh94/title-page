@@ -2,9 +2,9 @@ version: "3"
 services:
   app:
     build:
-      context: src
+      context: app
     volumes:
-      - ./src:/app
+      - ./app:/app
     tmpfs:
       - /srv/media
     ports:
@@ -18,4 +18,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.90.0/24
+        - subnet: 172.16.91.0/24

@@ -7,8 +7,8 @@ import requests
 from _pytest.monkeypatch import MonkeyPatch
 from starlette.testclient import TestClient
 
-import title_page
-from title_page import app
+from app import title_page
+from app.title_page import app
 
 
 @pytest.fixture

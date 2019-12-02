@@ -102,7 +102,7 @@ def render_html(title, composers, part, font, extra_info=None, part_additional="
     if not extra_info:
         extra_info = []
     env = jinja2.Environment(
-        loader=jinja2.PackageLoader("title_page", "templates"),
+        loader=jinja2.FileSystemLoader(str(Path(__file__).parent / "templates")),
         autoescape=jinja2.select_autoescape(["html"]),
     )
 
