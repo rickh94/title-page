@@ -1,3 +1,4 @@
+import os
 import tempfile
 import uuid
 from pathlib import Path
@@ -67,10 +68,29 @@ def create(piece: Piece = Body(..., example=piece_example)):
     file_name = uuid.uuid4()
     tmp_dir = Path(tempfile.mkdtemp())
     html_path = tmp_dir / f"{file_name}.html"
+    tmp_pdf_path = tmp_dir / f"{file_name}.pdf"
     pdf_path = PDF_PATH / f"{file_name}.pdf"
     with html_path.open("w") as html_file:
         html_file.write(html)
-    to_pdf(html_path, pdf_path)
+    to_pdf(html_path, tmp_pdf_path)
+
+    rendered_pdf_file = tmp_pdf_path.open("rb")
+    final_pdf_file = pdf_path.open("wb")
+    writer = PyPDF2.PdfFileWriter()
+    reader = PyPDF2.PdfFileReader(rendered_pdf_file)
+
+    writer.appendPagesFromReader(reader)
+    writer.addMetadata(
+        {
+            "/Title": f"{piece.title} ({piece.part})",
+            "/Author": ", ".join(piece.composers),
+        }
+    )
+    writer.write(final_pdf_file)
+
+    rendered_pdf_file.close()
+    final_pdf_file.close()
+    os.remove(tmp_pdf_path)
 
     return Output(url=f"/media/{file_name}.pdf", filename=f"{file_name}.pdf")
 

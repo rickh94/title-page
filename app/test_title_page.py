@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 import requests
+from PyPDF2 import PdfFileReader
 from _pytest.monkeypatch import MonkeyPatch
 from starlette.testclient import TestClient
 
@@ -17,16 +18,21 @@ def test_client(monkeypatch: MonkeyPatch):
     return TestClient(app)
 
 
+@pytest.fixture
+def fake_uuid():
+    def _fake_uuid(*args):
+        return "111-111-111-111"
+
+    return _fake_uuid
+
+
 def test_frontend_loads(test_client: TestClient):
     response = test_client.get("/")
     assert response.status_code == 200
     assert 'script src="/static/src.' in response.text
 
 
-def test_create(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path):
-    def fake_uuid(*args):
-        return "111-111-111-111"
-
+def test_create(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path, fake_uuid):
     monkeypatch.setattr(uuid, "uuid4", fake_uuid)
     monkeypatch.setattr(title_page, "PDF_PATH", tmp_path)
     monkeypatch.setattr(title_page, "COMPLETIONS_PATH", tmp_path)
@@ -45,14 +51,15 @@ def test_create(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path):
     assert response.json()["url"] == "/media/111-111-111-111.pdf"
 
 
-def test_create_with_font(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path):
-    def fake_uuid(*args):
-        return "111-111-111-111"
-
+def test_create_with_font(
+    test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path, fake_uuid
+):
     monkeypatch.setattr(uuid, "uuid4", fake_uuid)
     monkeypatch.setattr(title_page, "PDF_PATH", tmp_path)
     monkeypatch.setattr(title_page, "COMPLETIONS_PATH", tmp_path)
-    monkeypatch.setattr(tempfile, "mkdtemp", lambda: tmp_path)
+    temporary_in_function = tmp_path / "temp"
+    temporary_in_function.mkdir(exist_ok=True, parents=True)
+    monkeypatch.setattr(tempfile, "mkdtemp", lambda: temporary_in_function)
     response = test_client.post(
         "/generate",
         json={
@@ -68,9 +75,32 @@ def test_create_with_font(test_client: TestClient, monkeypatch: MonkeyPatch, tmp
     assert response.json()["filename"] == "111-111-111-111.pdf"
     assert response.json()["url"] == "/media/111-111-111-111.pdf"
 
-    html_path = tmp_path / "111-111-111-111.html"
+    html_path = temporary_in_function / "111-111-111-111.html"
     with html_path.open("r") as html_file:
         assert "font-family: 'Open Sans'" in html_file.read()
+
+
+def test_create_has_metadata(
+    test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path, fake_uuid
+):
+    monkeypatch.setattr(uuid, "uuid4", fake_uuid)
+    monkeypatch.setattr(title_page, "PDF_PATH", tmp_path)
+    monkeypatch.setattr(title_page, "COMPLETIONS_PATH", tmp_path)
+    file_data = {
+        "title": "Symphony No. 5",
+        "composers": ["Ludwig van Beethoven"],
+        "part": "Horn I",
+        "extra_info": ["Urtext"],
+        "part_additional": "in F",
+    }
+    response = test_client.post("/generate", json=file_data)
+    assert response.ok
+    pdf_path = tmp_path / response.json()["filename"]
+    with pdf_path.open("rb") as out_pdf:
+        reader = PdfFileReader(out_pdf)
+        metadata = reader.getDocumentInfo()
+        assert metadata["/Title"] == f"{file_data['title']} ({file_data['part']})"
+        assert metadata["/Author"] == ", ".join(file_data["composers"])
 
 
 def test_create_non_ascii(
