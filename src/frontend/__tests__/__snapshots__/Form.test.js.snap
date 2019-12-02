@@ -1,0 +1,209 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form matches snapshot 1`] = `
+<div>
+  <div
+    class="input-form"
+    data-testid="form"
+  >
+    <label
+      for="title"
+    >
+      Title
+    </label>
+    <input
+      data-testid="title"
+      id="title"
+      name="title"
+      placeholder="Symphony No. 5"
+      type="text"
+      value=""
+    />
+    <label
+      for="part"
+    >
+      Part Name
+    </label>
+    <input
+      data-testid="part-name"
+      id="part-name"
+      name="part-name"
+      placeholder="Violin I"
+      type="text"
+      value=""
+    />
+    <label
+      for="part-additional"
+    >
+      Additional Part Information
+    </label>
+    <input
+      data-testid="part-additional"
+      id="part-additional"
+      name="part-additional"
+      placeholder="in Bb"
+      type="text"
+      value=""
+    />
+    <div
+      class="list-field"
+    >
+      <label
+        for="add-composer"
+      >
+        Composers
+      </label>
+      <div
+        class="row button-row"
+      >
+        <div
+          class="column column-90"
+          style="padding: 0px;"
+        >
+          <input
+            class="autocomplete-input"
+            data-testid="composer-next-input"
+            id="add-composer"
+            placeholder="Ludwig van Beethoven"
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          class="column column-10"
+          style="padding: 0px;"
+        >
+          <button
+            class="button button-clear b-0"
+            data-testid="composer-add-button"
+          >
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-plus fa-w-14 "
+              data-icon="plus"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 448 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div
+        class="row"
+      >
+        <div
+          class="column column-90"
+        />
+      </div>
+    </div>
+    <div
+      class="list-field"
+    >
+      <label
+        for="add-extra-line"
+      >
+        Extra Information Lines
+      </label>
+      <div
+        class="row button-row"
+        style="padding-bottom: 0px;"
+      >
+        <div
+          class="column column-90"
+          style="padding: 0px; margin-bottom: 0px;"
+        >
+          <input
+            data-testid="extra-line-next-input"
+            id="add-extra-line"
+            name="add-extra-line"
+            placeholder="in C minor"
+            style="margin-bottom: 0px;"
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          class="column column-10"
+          style="padding: 0px;"
+        >
+          <button
+            class="button button-clear b-0"
+            data-testid="extra-line-add-button"
+          >
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-plus fa-w-14 "
+              data-icon="plus"
+              data-prefix="fas"
+              focusable="false"
+              role="img"
+              viewBox="0 0 448 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="row button-row"
+    >
+      <button
+        class="button-clear px-0"
+        style="font-size: 1.5rem;"
+        title="Show select font"
+      >
+        Select Font
+         
+        <svg
+          aria-hidden="true"
+          class="svg-inline--fa fa-chevron-down fa-w-14 chevron-icon"
+          data-icon="chevron-down"
+          data-prefix="fas"
+          focusable="false"
+          role="img"
+          viewBox="0 0 448 512"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+            fill="currentColor"
+          />
+        </svg>
+      </button>
+    </div>
+    <div
+      class="row button-row mt-1"
+    >
+      <button
+        class="button"
+        data-testid="submit-button"
+      >
+        Submit
+      </button>
+      <button
+        class="button-outline"
+        data-testid="clear-button"
+        style="margin-left: 1rem;"
+      >
+        Clear
+      </button>
+    </div>
+    <div
+      style="padding-top: 2rem;"
+    />
+    
+  </div>
+</div>
+`;

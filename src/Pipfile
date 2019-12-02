@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+requests = "*"
+
+[packages]
+jinja2 = "*"
+pdfkit = "*"
+weasyprint = "*"
+cffi = "*"
+fastapi = {extras = ["full"],version = "*"}
+uvicorn = "*"
+aiofiles = "*"
+python-multipart = "*"
+pypdf2 = "*"
+pydantic = {extras = ["email"],version = "*"}
+
+[requires]
+python_version = "3.7"

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{ title }}</title>
+</head>
+
+<style>
+
+  body {
+    font-family: '{{ font }}', serif;
+  }
+
+  .container {
+    margin: 1rem 2rem;
+  }
+
+  h1 {
+  {% if font == 'Cormorant Garamond' %}
+    font-size: 4rem;
+  {% else %}
+    font-size: 2.5rem;
+  {% endif %}
+    font-weight: 500;
+    margin-left: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .vl {
+    border-left: 1px solid black;
+    height: 35rem;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-content: space-around;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    margin: 0 1rem;
+  }
+
+  .m-left {
+  {% if font == 'Cormorant Garamond' %}
+    margin-left: 5.5rem;
+  {% else %}
+    margin-left: 4rem;
+  {% endif %}
+
+  }
+
+  h3 {
+    font-weight: 500;
+  {% if font == 'Cormorant Garamond' %}
+    font-size: 2rem;
+  {% else %}
+    font-size: 1.3rem;
+  {% endif %}
+    margin-top: 1rem;
+  }
+
+  h2 {
+  {% if font == 'Cormorant Garamond' %}
+    font-size: 2.5rem;
+  {% else %}
+    font-size: 1.7rem;
+  {% endif %}
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 0.3rem;
+    font-weight: 400;
+  }
+
+  @page {
+    size: Letter;
+    margin: 0;
+  }
+</style>
+
+<body>
+<div class="container">
+  <h1>
+    {% for composer in composers %}
+      {{ composer }}
+      <br>
+    {% endfor %}
+    <br>
+  </h1>
+  <div class="row">
+    <div class="column m-left">
+      <h3>{{ part }}</h3>
+      <p>{{ part_additional }}</p>
+    </div>
+    <div class="column">
+      <div class="vl"></div>
+    </div>
+    <div class="column">
+      <h2>{{ title }}</h2>
+      {% for text in extra_info %}
+        <p>{{ text }}</p>
+      {% endfor %}
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+
+</html>

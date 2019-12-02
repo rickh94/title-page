@@ -1,0 +1,20 @@
+.display-frame-wrapper {
+    width: 100%;
+}
+
+.display-frame {
+    height: 130vw;
+    width: 100%;
+}
+
+@media (min-width: 1280px) {
+    .display-frame-wrapper {
+        width: 67%;
+        height: 100%;
+    }
+
+    .display-frame {
+        height: 100%;
+    }
+
+}

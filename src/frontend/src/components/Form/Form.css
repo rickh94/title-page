@@ -1,0 +1,44 @@
+.combine-area {
+  background-color: rgba(155, 77, 202, 0.2);
+  padding: 1rem;
+  border: 1px solid rgba(155, 77, 202, 0.4);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.combine-area p {
+  padding: 0;
+  margin: 0;
+  color: darkslategray;
+}
+
+.combine-area:hover {
+  cursor: pointer;
+}
+
+.input-form {
+  width: 100%
+}
+
+.button-row {
+  padding: 0 1rem;
+}
+
+.select-font-title {
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+
+
+
+@media (min-width: 1280px) {
+  .input-form {
+    width: 32%;
+    margin-right: 4rem;
+  }
+}

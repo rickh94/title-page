@@ -2,9 +2,9 @@ version: "3"
 services:
   app:
     build:
-      context: .
+      context: src
     volumes:
-      - ./frontend/dist:/app/frontend/dist
+      - ./src:/app
     tmpfs:
       - /srv/media
     ports:
