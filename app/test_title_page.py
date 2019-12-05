@@ -26,6 +26,14 @@ def fake_uuid():
     return _fake_uuid
 
 
+def check_pdf_metadata(pdf_path: Path, file_data: dict):
+    with pdf_path.open("rb") as out_pdf:
+        reader = PdfFileReader(out_pdf)
+        metadata = reader.getDocumentInfo()
+        assert metadata["/Title"] == f"{file_data['title']} ({file_data['part']})"
+        assert metadata["/Author"] == ", ".join(file_data["composers"])
+
+
 def test_frontend_loads(test_client: TestClient):
     response = test_client.get("/")
     assert response.status_code == 200
@@ -96,11 +104,7 @@ def test_create_has_metadata(
     response = test_client.post("/generate", json=file_data)
     assert response.ok
     pdf_path = tmp_path / response.json()["filename"]
-    with pdf_path.open("rb") as out_pdf:
-        reader = PdfFileReader(out_pdf)
-        metadata = reader.getDocumentInfo()
-        assert metadata["/Title"] == f"{file_data['title']} ({file_data['part']})"
-        assert metadata["/Author"] == ", ".join(file_data["composers"])
+    check_pdf_metadata(pdf_path, file_data)
 
 
 def test_create_non_ascii(
@@ -170,6 +174,34 @@ def test_combine(test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path: Pa
     )
     assert response.ok
     assert response.json()["filename"] == "test_file.pdf"
+
+
+def test_combine_has_metadata(
+    test_client: TestClient, monkeypatch: MonkeyPatch, tmp_path, fake_uuid
+):
+    monkeypatch.setattr(title_page, "PDF_PATH", tmp_path)
+    monkeypatch.setattr(title_page, "COMPLETIONS_PATH", tmp_path)
+    file_data = {
+        "title": "Symphony No. 5",
+        "composers": ["Ludwig van Beethoven"],
+        "part": "Horn I",
+        "extra_info": ["Urtext"],
+        "part_additional": "in F",
+    }
+    response = test_client.post("/generate", json=file_data)
+    filename = response.json()["filename"]
+    get_pdf = requests.get(
+        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    )
+    pdf_data = get_pdf.content
+    response = test_client.post(
+        "/combine",
+        data={"title_page_filename": filename},
+        files={"file": ("test_file.pdf", pdf_data)},
+    )
+
+    pdf_path = tmp_path / response.json()["filename"]
+    check_pdf_metadata(pdf_path, file_data)
 
 
 def test_get_autocomplete_composers(

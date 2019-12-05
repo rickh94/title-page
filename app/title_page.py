@@ -106,6 +106,10 @@ async def combine(file: UploadFile = File(...), title_page_filename: str = Form(
     merged_pdf.append(str(title_page_path.absolute()))
     merged_pdf.append(tmp_upload)
 
+    with title_page_path.open("rb") as tp_file:
+        reader = PyPDF2.PdfFileReader(tp_file)
+        merged_pdf.addMetadata(reader.getDocumentInfo())
+
     output_pdf_path = PDF_PATH / file.filename
     with output_pdf_path.open("wb") as output_file:
         merged_pdf.write(output_file)
