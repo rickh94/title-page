@@ -46,7 +46,7 @@
     "fetch-mock": "^7.7.3",
     "jest": "^24.9.0",
     "jest-transform-stub": "^2.0.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "parcel-bundler": "^1.12.3",
     "puppeteer": "^1.19.0"
   }
